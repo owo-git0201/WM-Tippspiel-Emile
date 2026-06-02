@@ -1,0 +1,103 @@
+<%- include('partials/header') %>
+
+<div class="page-hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      <h1>⚽ WM 2026 Tippspiel</h1>
+      <p>Tendenz richtig = <strong>2 Pkt</strong> · Exaktes Ergebnis = <strong>5 Pkt</strong> · Powerspiel = <strong>×3</strong> · KO-Runden bis <strong>×4</strong></p>
+    </div>
+    <div class="scoring-legend">
+      <div class="legend-item"><span class="badge badge-green">2 Pkt</span> Tendenz</div>
+      <div class="legend-item"><span class="badge badge-gold">5 Pkt</span> Exakt</div>
+      <div class="legend-item"><span class="badge badge-orange">⚡ ×3</span> Powerspiel</div>
+      <div class="legend-item"><span class="badge badge-red">×2–4</span> KO</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-content">
+
+  <!-- WM-SIEGER TIPP -->
+  <% if (championOpen || championTip) { %>
+  <div class="champion-box">
+    <div class="champion-header">
+      <span class="champion-icon">🏆</span>
+      <div>
+        <div class="champion-title">WM-Sieger tippen — <span class="badge badge-gold">20 Punkte</span></div>
+        <div class="champion-sub">
+          <% if (championOpen) { %>
+          Einmalig tippbar bis <strong>19. Juni 2026</strong> (nach dem ersten Spieltag aller Teams).
+          <% } else { %>
+          Tipp-Deadline abgelaufen.
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% if (championTip) { %>
+    <div class="champion-current">
+      Dein Tipp: <strong><%= championTip.team %></strong>
+      <% if (championTip.points !== null) { %>
+        <span class="points-earned <%= championTip.points > 0 ? 'points-green' : 'points-zero' %>">
+          <%= championTip.points > 0 ? '+20 Punkte!' : 'Leider nicht' %>
+        </span>
+      <% } %>
+      <% if (championOpen) { %><span class="champion-change">(kannst du noch ändern)</span><% } %>
+    </div>
+    <% } %>
+    <% if (championOpen) { %>
+    <form method="POST" action="/champion" class="champion-form">
+      <select name="team" required class="champion-select">
+        <option value="">— Team auswählen —</option>
+        <% allTeams.forEach(t => { %>
+        <option value="<%= t %>" <%= championTip && championTip.team === t ? 'selected' : '' %>><%= t %></option>
+        <% }) %>
+      </select>
+      <button type="submit" class="btn btn-primary">🏆 Tippen</button>
+    </form>
+    <% } %>
+  </div>
+  <% } %>
+
+  <!-- POWERSPIEL INFO -->
+  <% if (powerplayUsed) { %>
+  <div class="info-banner">⚡ Powerspiel diese Woche bereits gesetzt.</div>
+  <% } else { %>
+  <div class="info-banner info-banner-tip">💡 <strong>Powerspiel:</strong> Wähle ein Spiel pro Woche — Punkte ×3! Mutige werden belohnt.</div>
+  <% } %>
+
+  <!-- VIEW TABS -->
+  <div class="view-tabs">
+    <button class="tab-btn active" data-view="day">📅 Nach Tag</button>
+    <button class="tab-btn" data-view="group">🗂️ Nach Gruppe</button>
+  </div>
+
+  <!-- NACH TAG -->
+  <div class="view-panel active" id="view-day">
+    <% Object.keys(byDay).forEach(dayKey => { %>
+    <div class="game-group">
+      <h2 class="group-title"><%= dayKey %></h2>
+      <div class="games-grid">
+        <% byDay[dayKey].forEach(game => { %>
+        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <!-- NACH GRUPPE -->
+  <div class="view-panel" id="view-group">
+    <% Object.keys(byGroup).forEach(groupKey => { %>
+    <div class="game-group">
+      <h2 class="group-title"><%= groupKey %></h2>
+      <div class="games-grid">
+        <% byGroup[groupKey].forEach(game => { %>
+        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+</div>
+<%- include('partials/footer') %>

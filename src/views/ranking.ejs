@@ -1,0 +1,118 @@
+<%- include('partials/header') %>
+
+<div class="page-hero page-hero-sm">
+  <div class="hero-inner">
+    <h1>🏆 Rangliste</h1>
+    <p>Wer liegt vorne? Gesamtranking und Klassentabellen.</p>
+  </div>
+</div>
+
+<div class="page-content">
+  <div class="ranking-tabs">
+    <button class="tab-btn active" data-tab="overall">Gesamtranking</button>
+    <button class="tab-btn" data-tab="schulfamilie">Schulfamilien</button>
+    <button class="tab-btn" data-tab="schulteam">Schulteam</button>
+    <button class="tab-btn" data-tab="klassen">Klassentabellen</button>
+  </div>
+
+  <!-- Gesamt -->
+  <div class="tab-panel active" id="tab-overall">
+    <table class="ranking-table">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Gruppe</th><th>Klasse(n)</th><th>Punkte</th><th class="points-detail">davon ⚡</th><th class="points-detail">🏆</th></tr>
+      </thead>
+      <tbody>
+        <% overall.forEach((u, i) => { %>
+        <tr class="<%= u.id === user.id ? 'row-me' : '' %> <%= u.disqualified ? 'row-disq' : '' %>">
+          <td class="rank-num">
+            <% if (u.disqualified) { %>🚫<% } else if (i === 0) { %>🥇<% } else if (i === 1) { %>🥈<% } else if (i === 2) { %>🥉<% } else { %><%= i+1 %><% } %>
+          </td>
+          <td class="rank-name">
+            <%= u.display_name %>
+            <% if (u.id === user.id) { %> <span class="you-tag">Du</span><% } %>
+            <% if (u.disqualified) { %> <span class="disq-tag">gesperrt</span><% } %>
+          </td>
+          <td><span class="role-badge role-<%= u.role %>"><%= u.role === 'schulfamilie' ? '👨‍👩‍👧‍👦' : '🏫' %></span></td>
+          <td class="rank-class">
+            <% if (u.class1_name) { %><span class="class-tag"><%= u.class1_name %></span><% } %>
+            <% if (u.class2_name) { %><span class="class-tag"><%= u.class2_name %></span><% } %>
+          </td>
+          <td class="rank-points"><strong><%= u.disqualified ? '–' : u.grand_total %></strong></td>
+          <td class="points-detail points-power"><% if (!u.disqualified && u.power_points > 0) { %>+<%= u.power_points %><% } else { %>–<% } %></td>
+          <td class="points-detail points-champ"><% if (!u.disqualified && u.champion_points > 0) { %>+<%= u.champion_points %><% } else { %>–<% } %></td>
+        </tr>
+        <% }) %>
+        <% if (!overall.length) { %>
+        <tr><td colspan="7" class="empty-state">Noch keine Tipps abgegeben — sei der Erste!</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Schulfamilien -->
+  <div class="tab-panel" id="tab-schulfamilie">
+    <table class="ranking-table">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Klasse(n)</th><th>Punkte</th></tr>
+      </thead>
+      <tbody>
+        <% overall.filter(u => u.role === 'schulfamilie').forEach((u, i) => { %>
+        <tr class="<%= u.id === user.id ? 'row-me' : '' %>">
+          <td class="rank-num"><% if (i===0){%>🥇<%}else if(i===1){%>🥈<%}else if(i===2){%>🥉<%}else{%><%= i+1 %><%}%></td>
+          <td class="rank-name"><%= u.display_name %><% if (u.id === user.id) { %> <span class="you-tag">Du</span><% } %></td>
+          <td>
+            <% if (u.class1_name) { %><span class="class-tag"><%= u.class1_name %></span><% } %>
+            <% if (u.class2_name) { %><span class="class-tag"><%= u.class2_name %></span><% } %>
+          </td>
+          <td class="rank-points"><strong><%= u.total_points %></strong></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Schulteam -->
+  <div class="tab-panel" id="tab-schulteam">
+    <table class="ranking-table">
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Punkte</th></tr>
+      </thead>
+      <tbody>
+        <% overall.filter(u => u.role === 'schulteam').forEach((u, i) => { %>
+        <tr class="<%= u.id === user.id ? 'row-me' : '' %>">
+          <td class="rank-num"><% if (i===0){%>🥇<%}else if(i===1){%>🥈<%}else if(i===2){%>🥉<%}else{%><%= i+1 %><%}%></td>
+          <td class="rank-name"><%= u.display_name %><% if (u.id === user.id) { %> <span class="you-tag">Du</span><% } %></td>
+          <td class="rank-points"><strong><%= u.total_points %></strong></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Klassentabellen -->
+  <div class="tab-panel" id="tab-klassen">
+    <div class="class-rankings-grid">
+      <% classes.forEach(cls => { %>
+      <% if (classRankings[cls.name] && classRankings[cls.name].length > 0) { %>
+      <div class="class-ranking-card">
+        <h3 class="class-ranking-title">🪐 <%= cls.name %></h3>
+        <table class="ranking-table ranking-table-sm">
+          <thead><tr><th>#</th><th>Name</th><th>Pkt</th></tr></thead>
+          <tbody>
+            <% classRankings[cls.name].forEach((u, i) => { %>
+            <tr class="<%= u.id === user.id ? 'row-me' : '' %>">
+              <td><% if (i===0){%>🥇<%}else if(i===1){%>🥈<%}else if(i===2){%>🥉<%}else{%><%= i+1 %><%}%></td>
+              <td><%= u.display_name %><% if (u.id === user.id) { %> <span class="you-tag">Du</span><% } %></td>
+              <td><strong><%= u.total_points %></strong></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+      <% }) %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

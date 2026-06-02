@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+<div class="onboarding-page">
+  <div class="onboarding-card">
+    <div class="onboarding-logo">
+      <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe">
+      <div class="auth-wm-badge">⚽ WM 2026 Tippspiel</div>
+    </div>
+
+    <h1 class="onboarding-title">Willkommen, <%= user.display_name %>!</h1>
+    <p class="onboarding-sub">Einmal kurz lesen — dann kannst du loslegen.</p>
+
+    <div class="onboarding-steps">
+      <div class="ob-step">
+        <div class="ob-icon">⚽</div>
+        <div class="ob-content">
+          <div class="ob-title">Tippen</div>
+          <div class="ob-desc">Für jedes Spiel kannst du tippen: Heimsieg, Unentschieden oder Auswärtssieg. Optional auch das genaue Ergebnis.</div>
+        </div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-icon">📊</div>
+        <div class="ob-content">
+          <div class="ob-title">Punkte</div>
+          <div class="ob-desc">Tendenz richtig → <strong>2 Punkte</strong>. Exaktes Ergebnis → <strong>4 Punkte</strong>. WM-Sieger richtig → <strong>20 Punkte</strong>.</div>
+        </div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-icon">⚡</div>
+        <div class="ob-content">
+          <div class="ob-title">Powerspiel</div>
+          <div class="ob-desc">Einmal pro Spieltag kannst du ein Spiel als Powerspiel markieren — dein Tipp zählt dann <strong>dreifach</strong>. Trau dich!</div>
+        </div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-icon">🏆</div>
+        <div class="ob-content">
+          <div class="ob-title">WM-Sieger</div>
+          <div class="ob-desc">Bis zum 19. Juni kannst du einmalig tippen, wer die WM gewinnt. Richtig → <strong>20 Bonuspunkte</strong>.</div>
+        </div>
+      </div>
+      <div class="ob-step">
+        <div class="ob-icon">🏅</div>
+        <div class="ob-content">
+          <div class="ob-title">Rangliste</div>
+          <div class="ob-desc">Gesamtranking, Schulfamilien, Schulteam und Klassentabellen — schau wer vorne liegt!</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="onboarding-rules">
+      <div class="rules-title">📋 Spielregeln & Datenschutz</div>
+      <div class="rules-text">
+        <ul>
+          <li>✅ Respektvoller Umgang — auch bei Niederlagen</li>
+          <li>✅ Ein Konto pro Familie / Person</li>
+          <li>✅ Keine Weitergabe von Zugangsdaten</li>
+          <li>✅ Die Schule kann Konten bei Regelverstößen sperren</li>
+        </ul>
+        <p style="margin-top:10px;">Dein <strong>Anzeigename</strong> ist für alle angemeldeten Teilnehmenden in der Rangliste sichtbar. Es werden keine weiteren persönlichen Daten gespeichert. Alle Daten werden nach dem Turnier (19. Juli 2026) gelöscht. Das Tippspiel ist ein freiwilliges, schulinternes Angebot.</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/onboarding">
+      <button type="submit" class="btn btn-primary btn-full" style="margin-top:8px;padding:14px;">Los geht's! ⚽</button>
+    </form>
+  </div>
+</div>
+<%- include('partials/footer') %>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WM 2026 · EmiLe Tippspiel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="/">
+      <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="nav-logo">
+      <span class="nav-sep"></span>
+      <span class="nav-title">⚽ WM 2026</span>
+    </a>
+    <% if (user) { %>
+    <div class="nav-links">
+      <a href="/" class="nav-link">Tippen</a>
+      <a href="/ranking" class="nav-link">Rangliste</a>
+      <% if (user.role === 'admin') { %><a href="/admin" class="nav-link nav-admin">Admin</a><% } %>
+      <span class="nav-user">👤 <%= user.display_name %></span>
+      <a href="/auth/logout" class="nav-link nav-logout">Abmelden</a>
+    </div>
+    <% } %>
+  </div>
+</nav>
+<main>

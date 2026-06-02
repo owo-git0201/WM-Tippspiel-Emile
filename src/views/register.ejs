@@ -1,0 +1,113 @@
+<%- include('partials/header') %>
+<div class="auth-page">
+  <div class="auth-card auth-card-wide">
+    <div class="auth-logo">
+      <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="auth-school-logo">
+      <div class="auth-wm-badge">⚽ WM 2026 Tippspiel</div>
+    </div>
+    <h1 class="auth-title">Jetzt mitmachen!</h1>
+    <p class="auth-sub">Registriere dich einmalig — deine ganze Familie tippt unter einem Konto.</p>
+
+    <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/auth/register" class="auth-form">
+      <div class="field">
+        <label>Anzeigename <span class="required">*</span></label>
+        <input type="text" name="display_name" required placeholder="z.B. Familie Wontke" maxlength="50">
+        <span class="field-hint">So wirst du in der Rangliste angezeigt.</span>
+      </div>
+      <div class="field">
+        <label>Benutzername <span class="required">*</span></label>
+        <input type="text" name="username" required placeholder="z.B. familie-wontke" maxlength="30" pattern="[a-zA-Z0-9\-_]+" autocomplete="username">
+        <span class="field-hint">Kleinbuchstaben, Zahlen, Bindestrich — kein Leerzeichen.</span>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Passwort <span class="required">*</span></label>
+          <input type="password" name="password" required minlength="6" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label>Passwort wiederholen <span class="required">*</span></label>
+          <input type="password" name="password2" required autocomplete="new-password">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Wer seid ihr? <span class="required">*</span></label>
+        <div class="role-cards">
+          <label class="role-card">
+            <input type="radio" name="role" value="schulfamilie" checked>
+            <div class="role-card-inner">
+              <div class="role-icon">👨‍👩‍👧‍👦</div>
+              <div class="role-name">Schulfamilie</div>
+              <div class="role-desc">Eltern & Schüler</div>
+            </div>
+          </label>
+          <label class="role-card">
+            <input type="radio" name="role" value="schulteam">
+            <div class="role-card-inner">
+              <div class="role-icon">🏫</div>
+              <div class="role-name">Schulteam</div>
+              <div class="role-desc">Lehrkräfte & Verwaltung</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Klasse(n) <span class="field-hint-inline">(optional, für Klassenrangliste)</span></label>
+        <div class="class-picker">
+          <div class="field">
+            <label class="label-sm">Klasse 1</label>
+            <select name="class1_id">
+              <option value="">— keine Angabe —</option>
+              <% classes.forEach(c => { %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <div class="field">
+            <label class="label-sm">Klasse 2 <span class="field-hint-inline">(Geschwisterkind)</span></label>
+            <select name="class2_id">
+              <option value="">— keine zweite Klasse —</option>
+              <% classes.forEach(c => { %>
+              <option value="<%= c.id %>"><%= c.name %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="rules-box">
+        <div class="rules-title">📋 Mitmach-Regeln & Datenschutz</div>
+        <div class="rules-text">
+          <p><strong>Spielregeln:</strong> Das Tippspiel ist ein freiwilliges, schulinternes Freizeitangebot der EmiLe Montessorischule während der WM 2026. Es geht um Spaß, Spannung und gemeinsames Mitfiebern.</p>
+          <ul>
+            <li>✅ Respektvoller Umgang miteinander — auch bei Niederlagen</li>
+            <li>✅ Ein Konto pro Familie / Person</li>
+            <li>✅ Faire Teilnahme — kein Austausch von Zugangsdaten</li>
+            <li>✅ Die Schule behält sich vor, Konten bei Regelverstößen zu sperren</li>
+          </ul>
+          <p style="margin-top:10px;"><strong>Datenschutz:</strong> Es werden ausschließlich Anzeigename, Benutzername und Passwort gespeichert — keine E-Mail-Adresse, keine weiteren personenbezogenen Daten. Alle Daten bleiben schulintern und werden nach Abschluss des Turniers gelöscht.</p>
+          <p>Der gewählte <strong>Anzeigename</strong> ist für alle angemeldeten Teilnehmenden in der Rangliste sichtbar.</p>
+        </div>
+        <div class="rules-checks">
+          <label class="consent-check">
+            <input type="checkbox" name="consent_rules" required>
+            <span>Ich habe die Spielregeln gelesen und stimme zu.</span>
+          </label>
+          <label class="consent-check">
+            <input type="checkbox" name="consent_name" required>
+            <span>Ich bin einverstanden, dass mein Anzeigename schulintern in der Rangliste angezeigt wird.</span>
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Registrieren & mitmachen</button>
+    </form>
+    <p class="auth-switch">Schon registriert? <a href="/auth/login">Anmelden</a></p>
+  </div>
+</div>
+<%- include('partials/footer') %>

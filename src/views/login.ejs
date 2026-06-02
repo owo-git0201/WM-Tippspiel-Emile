@@ -1,0 +1,32 @@
+<%- include('partials/header') %>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="auth-school-logo">
+      <div class="auth-wm-badge">⚽ WM 2026 Tippspiel</div>
+    </div>
+    <h1 class="auth-title">Willkommen zurück!</h1>
+    <p class="auth-sub">Melde dich an und tippe die WM 2026.</p>
+
+    <% if (query && query.registered) { %>
+    <div class="alert alert-success">Registrierung erfolgreich! Du kannst dich jetzt anmelden.</div>
+    <% } %>
+    <% if (error) { %>
+    <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/auth/login" class="auth-form">
+      <div class="field">
+        <label>Benutzername</label>
+        <input type="text" name="username" required autocomplete="username" placeholder="z.B. familie-wontke">
+      </div>
+      <div class="field">
+        <label>Passwort</label>
+        <input type="password" name="password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-full">Anmelden</button>
+    </form>
+    <p class="auth-switch">Noch kein Konto? <a href="/auth/register">Jetzt registrieren</a></p>
+  </div>
+</div>
+<%- include('partials/footer') %>

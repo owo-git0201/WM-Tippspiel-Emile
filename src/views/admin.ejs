@@ -1,0 +1,145 @@
+<%- include('partials/header') %>
+
+<div class="page-hero page-hero-sm">
+  <div class="hero-inner">
+    <h1>⚙️ Admin</h1>
+    <p>Ergebnisse eintragen · Spiele verwalten · Nutzer sehen</p>
+  </div>
+</div>
+
+<div class="page-content">
+  <% if (flash) { %>
+  <div class="alert <%= flash.type === 'error' ? 'alert-error' : 'alert-success' %>" style="margin-bottom:20px;"><%- flash.msg %></div>
+  <% } %>
+  <h2 class="section-title">Ergebnisse eintragen</h2>
+  <div class="admin-games">
+    <% games.filter(g => !g.finished).slice(0, 20).forEach(game => { %>
+    <div class="admin-game-row">
+      <div class="admin-matchup">
+        <span><%= game.home_flag %> <%= game.home_team %></span>
+        <span class="vs">VS</span>
+        <span><%= game.away_team %> <%= game.away_flag %></span>
+      </div>
+      <span class="admin-time"><%= new Date(game.kickoff).toLocaleDateString('de-DE', {day:'2-digit',month:'2-digit'}) %> <%= new Date(game.kickoff).toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'}) %></span>
+      <form method="POST" action="/admin/result/<%= game.id %>" class="result-form">
+        <input type="number" name="home_score" min="0" max="20" required placeholder="H" class="score-input" style="-moz-appearance:textfield;">
+        <span>:</span>
+        <input type="number" name="away_score" min="0" max="20" required placeholder="G" class="score-input" style="-moz-appearance:textfield;">
+        <button type="submit" class="btn btn-sm btn-primary">✓ Eintragen</button>
+      </form>
+    </div>
+  <% }) %>
+  <% if (!games.filter(g => !g.finished).length) { %>
+  <p class="empty-state">Alle Spiele eingetragen.</p>
+  <% } %>
+
+  <div class="divider"></div>
+  <h2 class="section-title">Abgeschlossene Spiele korrigieren</h2>
+  <div class="admin-games">
+  <% games.filter(g => g.finished).slice(-10).reverse().forEach(game => { %>
+    <div class="admin-game-row">
+      <div class="admin-matchup">
+        <span><%= game.home_flag %> <%= game.home_team %></span>
+        <span class="final-score" style="font-size:.9rem"><%= game.home_score %>:<%= game.away_score %></span>
+        <span><%= game.away_team %> <%= game.away_flag %></span>
+      </div>
+      <form method="POST" action="/admin/result/<%= game.id %>/correct" class="result-form">
+        <input type="number" name="home_score" min="0" max="20" required placeholder="H" class="score-input" value="<%= game.home_score %>" style="-moz-appearance:textfield;">
+        <span>:</span>
+        <input type="number" name="away_score" min="0" max="20" required placeholder="G" class="score-input" value="<%= game.away_score %>" style="-moz-appearance:textfield;">
+        <button type="submit" class="btn btn-sm btn-restore" onclick="return confirm('Ergebnis korrigieren und Punkte neu berechnen?')">Korrigieren</button>
+      </form>
+    </div>
+  <% }) %>
+  </div>
+  </div>
+
+  <div class="divider"></div>
+  <h2 class="section-title">KO-Spiel hinzufügen</h2>
+  <form method="POST" action="/admin/game/add" class="admin-add-form">
+    <div class="field-row">
+      <div class="field"><label>Heimteam</label><input type="text" name="home_team" required placeholder="z.B. Deutschland"></div>
+      <div class="field"><label>Gästeteam</label><input type="text" name="away_team" required placeholder="z.B. Frankreich"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Heim-Flagge</label><input type="text" name="home_flag" placeholder="🇩🇪" maxlength="10"></div>
+      <div class="field"><label>Gäste-Flagge</label><input type="text" name="away_flag" placeholder="🇫🇷" maxlength="10"></div>
+      <div class="field"><label>Anstoß</label><input type="datetime-local" name="kickoff" required></div>
+      <div class="field">
+        <label>Runde</label>
+        <select name="round">
+          <option>Achtelfinale</option>
+          <option>Viertelfinale</option>
+          <option>Halbfinale</option>
+          <option>Spiel um Platz 3</option>
+          <option>Finale</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Spiel hinzufügen</button>
+  </form>
+
+  <div class="divider"></div>
+  <h2 class="section-title">Registrierte Nutzer (<%= users.length %>)</h2>
+  <table class="ranking-table">
+    <thead><tr><th>Name</th><th>Username</th><th>Rolle</th><th>Klasse(n)</th><th>Registriert</th><th>Aktion</th></tr></thead>
+    <tbody>
+      <% users.forEach(u => { %>
+      <tr class="<%= u.disqualified ? 'row-disq' : '' %>">
+        <td><%= u.display_name %> <% if (u.disqualified) { %><span class="disq-tag">gesperrt</span><% } %></td>
+        <td><code><%= u.username %></code></td>
+        <td><span class="role-badge role-<%= u.role %>"><%= u.role %></span></td>
+        <td>
+          <% if (u.class1_name) { %><span class="class-tag"><%= u.class1_name %></span><% } %>
+          <% if (u.class2_name) { %><span class="class-tag"><%= u.class2_name %></span><% } %>
+        </td>
+        <td><%= new Date(u.created_at).toLocaleDateString('de-DE') %></td>
+        <td>
+          <% if (u.role !== 'admin') { %>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <form method="POST" action="/admin/user/<%= u.id %>/disqualify" style="display:inline">
+              <button type="submit" class="btn btn-sm <%= u.disqualified ? 'btn-restore' : 'btn-disq' %>">
+                <%= u.disqualified ? '✓ Entsperren' : '🚫 Sperren' %>
+              </button>
+            </form>
+            <form method="POST" action="/admin/user/<%= u.id %>/reset-password" style="display:inline">
+              <button type="submit" class="btn btn-sm" style="background:var(--gold3);color:#92400E;border:1px solid var(--gold2);" onclick="return confirm('Passwort für <%= u.display_name %> zurücksetzen?')">🔑 PW Reset</button>
+            </form>
+          </div>
+          <% } %>
+        </td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+
+  <div class="divider"></div>
+  <h2 class="section-title">WM-Sieger Tipps</h2>
+  <div class="admin-champion-form">
+    <p style="font-size:.85rem;color:var(--text2);margin-bottom:14px;">
+      Trage hier den echten WM-Sieger ein. Das System gleicht automatisch alle Tipps ab und vergibt 20 Punkte an richtige Treffer.
+    </p>
+    <form method="POST" action="/admin/champion/resolve" class="result-form">
+      <input type="text" name="winner" placeholder="z.B. Deutschland" required style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:.9rem;">
+      <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Wirklich auflösen? Das kann nicht rückgängig gemacht werden.')">🏆 Auflösen & Punkte vergeben</button>
+    </form>
+  </div>
+  <% if (championTips.length) { %>
+  <table class="ranking-table" style="margin-top:16px;">
+    <thead><tr><th>Familie</th><th>WM-Sieger Tipp</th><th>Punkte</th></tr></thead>
+    <tbody>
+      <% championTips.forEach(ct => { %>
+      <tr>
+        <td><%= ct.display_name %></td>
+        <td><strong><%= ct.team %></strong></td>
+        <td><%= ct.points !== null ? (ct.points > 0 ? '+' + ct.points : '0') : '–' %></td>
+      </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } else { %>
+  <p class="empty-state">Noch keine WM-Sieger-Tipps abgegeben.</p>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>
