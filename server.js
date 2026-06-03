@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const bcrypt = require('bcryptjs');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
 const { getMatchdayBounds } = require('./src/matchdays');
@@ -248,6 +249,19 @@ function getWeekEnd(date) {
   return d.toISOString();
 }
 
-seedGames().then(() => {
+async function seedAdmin() {
+  const adminPw = process.env.ADMIN_PASSWORD;
+  if (!adminPw) return;
+  const existing = await get("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+  if (existing) return;
+  const hash = await bcrypt.hash(adminPw, 12);
+  await run(
+    "INSERT INTO users (display_name, username, password_hash, role, onboarded) VALUES (?, ?, ?, 'admin', 1)",
+    ['Admin', 'admin', hash]
+  );
+  console.log('Admin-Account angelegt (username: admin)');
+}
+
+seedGames().then(seedAdmin).then(() => {
   app.listen(PORT, () => console.log(`EmiLe WM-Tippspiel läuft auf http://localhost:${PORT}`));
 });
