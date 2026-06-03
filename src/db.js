@@ -63,7 +63,7 @@ db.serialize(() => {
 
   // Klassen anlegen
   const classes = [
-    'Merkur','Venus','Erde','Mars','Jupiter','Saturn','Uranus','Neptun'
+    'Saturn','Venus','Jupiter','Uranus','Mars','Neptun','Merkur','Mond','Sonne','M2-Universum'
   ];
   const stmt = db.prepare('INSERT OR IGNORE INTO classes (name) VALUES (?)');
   classes.forEach(c => stmt.run(c));

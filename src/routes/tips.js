@@ -10,6 +10,7 @@ function requireLogin(req, res, next) {
 }
 
 router.post('/save', requireLogin, async (req, res) => {
+  if (req.session.user.role === 'admin') return res.json({ ok: false, error: 'Admin-Account kann nicht tippen.' });
   const userId = req.session.user.id;
   const { game_id, tip_tendency, tip_home, tip_away, is_powerplay } = req.body;
 

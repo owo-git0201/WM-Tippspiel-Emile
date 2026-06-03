@@ -85,8 +85,8 @@
     <thead><tr><th>Name</th><th>Username</th><th>Rolle</th><th>Klasse(n)</th><th>Registriert</th><th>Aktion</th></tr></thead>
     <tbody>
       <% users.forEach(u => { %>
-      <tr class="<%= u.disqualified ? 'row-disq' : '' %>">
-        <td><%= u.display_name %> <% if (u.disqualified) { %><span class="disq-tag">gesperrt</span><% } %></td>
+      <tr class="<%= u.disqualified ? 'row-disq' : '' %> <%= u.role === 'admin' ? 'row-admin' : '' %>">
+        <td><%= u.display_name %> <% if (u.disqualified) { %><span class="disq-tag">🔒 gesperrt</span><% } %></td>
         <td><code><%= u.username %></code></td>
         <td><span class="role-badge role-<%= u.role %>"><%= u.role %></span></td>
         <td>

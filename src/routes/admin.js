@@ -20,7 +20,7 @@ router.get('/', requireAdmin, async (req, res) => {
     FROM users u
     LEFT JOIN classes c1 ON u.class1_id = c1.id
     LEFT JOIN classes c2 ON u.class2_id = c2.id
-    ORDER BY u.created_at DESC
+    ORDER BY u.disqualified ASC, u.created_at DESC
   `);
   const championTips = await all(
     `SELECT ct.*, u.display_name FROM champion_tips ct JOIN users u ON ct.user_id = u.id`

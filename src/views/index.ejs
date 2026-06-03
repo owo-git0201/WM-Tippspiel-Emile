@@ -3,14 +3,22 @@
 <div class="page-hero">
   <div class="hero-inner">
     <div class="hero-text">
-      <h1>⚽ WM 2026 Tippspiel</h1>
-      <p>Tendenz richtig = <strong>2 Pkt</strong> · Exaktes Ergebnis = <strong>5 Pkt</strong> · Powerspiel = <strong>×3</strong> · KO-Runden bis <strong>×4</strong></p>
+      <h1>&#x26BD; WM 2026 Tippspiel</h1>
+      <p class="hero-powered"><em>Powered by AK Sport</em></p>
     </div>
-    <div class="scoring-legend">
-      <div class="legend-item"><span class="badge badge-green">2 Pkt</span> Tendenz</div>
-      <div class="legend-item"><span class="badge badge-gold">5 Pkt</span> Exakt</div>
-      <div class="legend-item"><span class="badge badge-orange">⚡ ×3</span> Powerspiel</div>
-      <div class="legend-item"><span class="badge badge-red">×2–4</span> KO</div>
+    <div class="hero-right">
+      <div class="scoring-legend">
+        <div class="legend-item"><span class="badge badge-green">2 Pkt</span> Tendenz</div>
+        <div class="legend-item"><span class="badge badge-gold">4 Pkt</span> Exakt</div>
+        <div class="legend-item"><span class="badge badge-orange">&#x26A1; &times;3</span> Powerspiel</div>
+        <div class="legend-item"><span class="badge badge-red">&times;2&ndash;4</span> KO</div>
+        <p class="legend-sub">Tendenz richtig = <strong>2 Pkt</strong> &middot; Exaktes Ergebnis = <strong>4 Pkt</strong> &middot; Powerspiel = <strong>&times;3</strong></p>
+      </div>
+      <% if (powerplayUsed) { %>
+      <div class="hero-powerplay-banner hero-powerplay-set">&#x26A1; Powerspiel diese Woche bereits gesetzt.</div>
+      <% } else { %>
+      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> W&auml;hle ein Spiel pro Woche &ndash; Punkte &times;3! Mutige werden belohnt.</div>
+      <% } %>
     </div>
   </div>
 </div>
@@ -21,9 +29,9 @@
   <% if (championOpen || championTip) { %>
   <div class="champion-box">
     <div class="champion-header">
-      <span class="champion-icon">🏆</span>
+      <span class="champion-icon">&#x1F3C6;</span>
       <div>
-        <div class="champion-title">WM-Sieger tippen — <span class="badge badge-gold">20 Punkte</span></div>
+        <div class="champion-title">WM-Sieger tippen &mdash; <span class="badge badge-gold">20 Punkte</span></div>
         <div class="champion-sub">
           <% if (championOpen) { %>
           Einmalig tippbar bis <strong>19. Juni 2026</strong> (nach dem ersten Spieltag aller Teams).
@@ -41,34 +49,27 @@
           <%= championTip.points > 0 ? '+20 Punkte!' : 'Leider nicht' %>
         </span>
       <% } %>
-      <% if (championOpen) { %><span class="champion-change">(kannst du noch ändern)</span><% } %>
+      <% if (championOpen) { %><span class="champion-change">(kannst du noch &auml;ndern)</span><% } %>
     </div>
     <% } %>
     <% if (championOpen) { %>
     <form method="POST" action="/champion" class="champion-form">
       <select name="team" required class="champion-select">
-        <option value="">— Team auswählen —</option>
+        <option value="">&mdash; Team ausw&auml;hlen &mdash;</option>
         <% allTeams.forEach(t => { %>
         <option value="<%= t %>" <%= championTip && championTip.team === t ? 'selected' : '' %>><%= t %></option>
         <% }) %>
       </select>
-      <button type="submit" class="btn btn-primary">🏆 Tippen</button>
+      <button type="submit" class="btn btn-primary">&#x1F3C6; Tippen</button>
     </form>
     <% } %>
   </div>
   <% } %>
 
-  <!-- POWERSPIEL INFO -->
-  <% if (powerplayUsed) { %>
-  <div class="info-banner">⚡ Powerspiel diese Woche bereits gesetzt.</div>
-  <% } else { %>
-  <div class="info-banner info-banner-tip">💡 <strong>Powerspiel:</strong> Wähle ein Spiel pro Woche — Punkte ×3! Mutige werden belohnt.</div>
-  <% } %>
-
   <!-- VIEW TABS -->
   <div class="view-tabs">
-    <button class="tab-btn active" data-view="day">📅 Nach Tag</button>
-    <button class="tab-btn" data-view="group">🗂️ Nach Gruppe</button>
+    <button class="tab-btn active" data-view="day">&#x1F4C5; Nach Tag</button>
+    <button class="tab-btn" data-view="group">&#x1F5C2;&#xFE0F; Nach Gruppe</button>
   </div>
 
   <!-- NACH TAG -->

@@ -1,45 +1,31 @@
-// Tipp-Formulare: Auto-Tendenz bei Ergebnis-Eingabe
-document.querySelectorAll('.tip-form').forEach(form => {
+// Tipp-Formulare: Auto-Save
+document.querySelectorAll('.tip-form[data-autosave]').forEach(form => {
   const gameId = form.dataset.gameId;
   const homeInput = form.querySelector(`[name="score_home_${gameId}"]`);
   const awayInput = form.querySelector(`[name="score_away_${gameId}"]`);
   const tendencyBtns = form.querySelectorAll('.tendency-btn');
+  const status = document.getElementById(`status-${gameId}`);
+  let saveTimer = null;
 
   function autoTendency() {
     const h = parseInt(homeInput?.value);
     const a = parseInt(awayInput?.value);
     if (isNaN(h) || isNaN(a)) return;
-    let t = h > a ? 'H' : h < a ? 'A' : 'D';
+    const t = h > a ? 'H' : h < a ? 'A' : 'D';
     form.querySelectorAll(`[name="tendency_${gameId}"]`).forEach(r => {
       r.checked = r.value === t;
       r.closest('.tendency-btn').classList.toggle('active', r.value === t);
     });
   }
 
-  homeInput?.addEventListener('input', autoTendency);
-  awayInput?.addEventListener('input', autoTendency);
-
-  tendencyBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      tendencyBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    });
-  });
-
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const status = document.getElementById(`status-${gameId}`);
+  async function saveTip() {
     const tendency = form.querySelector(`[name="tendency_${gameId}"]:checked`)?.value;
-    if (!tendency) {
-      status.textContent = 'Bitte eine Tendenz auswählen.';
-      status.className = 'tip-status err';
-      return;
-    }
+    if (!tendency) return;
     const scoreHome = homeInput?.value;
     const scoreAway = awayInput?.value;
     const powerplay = form.querySelector(`[name="powerplay_${gameId}"]`)?.checked ? '1' : '0';
 
-    status.textContent = 'Speichern…';
+    status.textContent = '…';
     status.className = 'tip-status';
 
     try {
@@ -56,18 +42,36 @@ document.querySelectorAll('.tip-form').forEach(form => {
       });
       const data = await res.json();
       if (data.ok) {
-        status.textContent = '✓ Gespeichert!';
+        status.textContent = '✓';
         status.className = 'tip-status ok';
-        setTimeout(() => { status.textContent = ''; }, 3000);
+        setTimeout(() => { status.textContent = ''; }, 2000);
       } else {
-        status.textContent = data.error || 'Fehler beim Speichern.';
+        status.textContent = data.error || 'Fehler';
         status.className = 'tip-status err';
       }
     } catch {
-      status.textContent = 'Verbindungsfehler.';
+      status.textContent = 'Verbindungsfehler';
       status.className = 'tip-status err';
     }
+  }
+
+  function debouncedSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveTip, 400);
+  }
+
+  tendencyBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tendencyBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      saveTip();
+    });
   });
+
+  homeInput?.addEventListener('input', () => { autoTendency(); debouncedSave(); });
+  awayInput?.addEventListener('input', () => { autoTendency(); debouncedSave(); });
+
+  form.querySelector(`[name="powerplay_${gameId}"]`)?.addEventListener('change', saveTip);
 });
 
 // View Tabs (Tag / Gruppe)

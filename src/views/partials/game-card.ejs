@@ -3,18 +3,19 @@
   const isPast = new Date() >= kickoff;
   const isFinished = game.finished;
   const hasTip = game.tip_tendency;
-  const canTip = !isPast && !isFinished;
+  const canTip = !isPast && !isFinished && user.role !== 'admin';
   const isMyPowerplay = powerplayUsed && powerplayUsed == game.id;
   const weekPowerplayTaken = powerplayUsed && !isMyPowerplay;
 %>
 <div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %>">
+
   <div class="game-header">
     <span class="game-time"><%= kickoff.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) %> Uhr</span>
     <% if (game.group_name) { %><span class="group-badge">Gr. <%= game.group_name %></span><% } %>
     <% if (isMyPowerplay) { %><span class="powerplay-tag">⚡ Powerspiel</span><% } %>
     <% if (isFinished) { %><span class="finished-tag">Abgeschlossen</span><% } %>
     <% if (isPast && !isFinished) { %><span class="live-tag">Läuft</span><% } %>
-    <% if (!isPast && hasTip) { %><span class="tip-saved-badge">✓ getippt</span><% } %>
+    <% if (canTip && hasTip) { %><span class="tip-saved-badge">✓ getippt</span><% } %>
   </div>
 
   <div class="game-matchup">
@@ -24,9 +25,9 @@
     </div>
     <div class="game-score-area">
       <% if (isFinished) { %>
-      <span class="final-score"><%= game.home_score %> : <%= game.away_score %></span>
+        <span class="final-score"><%= game.home_score %> : <%= game.away_score %></span>
       <% } else { %>
-      <span class="vs">VS</span>
+        <span class="vs">VS</span>
       <% } %>
     </div>
     <div class="team team-away">
@@ -35,8 +36,29 @@
     </div>
   </div>
 
+  <% if (isFinished && hasTip) { %>
+  <div class="tip-result-row">
+    <div class="tip-tendency-display">
+      <% if (game.tip_tendency === 'H') { %><%= game.home_flag %> Heimsieg
+      <% } else if (game.tip_tendency === 'D') { %>🤝 Unentschieden
+      <% } else { %><%= game.away_flag %> Auswärtssieg<% } %>
+      <% if (game.tip_home !== null) { %>&nbsp;(<%= game.tip_home %>:<%= game.tip_away %>)<% } %>
+      <% if (isMyPowerplay) { %> ⚡<% } %>
+    </div>
+    <% if (game.points !== null) { %>
+    <div class="points-breakdown">
+      <span class="points-earned <%= game.points > 0 ? 'points-green' : 'points-zero' %>">
+        <%= game.points > 0 ? '+' + game.points : '0' %> Pkt<% if (game.power_bonus > 0) { %> <span class="powerplay-multiplier-tag">⚡×3</span><% } %>
+      </span>
+    </div>
+    <% } %>
+  </div>
+  <% } else if (isFinished && !hasTip) { %>
+  <div class="no-tip">Kein Tipp abgegeben</div>
+  <% } %>
+
   <% if (canTip) { %>
-  <form class="tip-form" data-game-id="<%= game.id %>">
+  <form class="tip-form" data-game-id="<%= game.id %>" data-autosave="true">
     <div class="tendency-picker">
       <label class="tendency-btn <%= game.tip_tendency === 'H' ? 'active' : '' %>">
         <input type="radio" name="tendency_<%= game.id %>" value="H" <%= game.tip_tendency === 'H' ? 'checked' : '' %>>
@@ -44,7 +66,7 @@
       </label>
       <label class="tendency-btn <%= game.tip_tendency === 'D' ? 'active' : '' %>">
         <input type="radio" name="tendency_<%= game.id %>" value="D" <%= game.tip_tendency === 'D' ? 'checked' : '' %>>
-        <span>🤝 Unentschieden</span>
+        <span>🤝 Unent.</span>
       </label>
       <label class="tendency-btn <%= game.tip_tendency === 'A' ? 'active' : '' %>">
         <input type="radio" name="tendency_<%= game.id %>" value="A" <%= game.tip_tendency === 'A' ? 'checked' : '' %>>
@@ -52,11 +74,15 @@
       </label>
     </div>
     <div class="exact-score">
-      <span class="exact-label">Exakt <span class="badge badge-gold">+5</span></span>
+      <span class="exact-label">Exakt <span class="badge badge-gold">+4</span></span>
       <div class="score-inputs">
-        <input type="number" class="score-input" name="score_home_<%= game.id %>" min="0" max="20" placeholder="–" value="<%= game.tip_home !== null ? game.tip_home : '' %>">
+        <input type="number" class="score-input" name="score_home_<%= game.id %>"
+          min="0" max="20" placeholder="–"
+          value="<%= game.tip_home !== null ? game.tip_home : '' %>">
         <span class="score-sep">:</span>
-        <input type="number" class="score-input" name="score_away_<%= game.id %>" min="0" max="20" placeholder="–" value="<%= game.tip_away !== null ? game.tip_away : '' %>">
+        <input type="number" class="score-input" name="score_away_<%= game.id %>"
+          min="0" max="20" placeholder="–"
+          value="<%= game.tip_away !== null ? game.tip_away : '' %>">
       </div>
     </div>
     <div class="tip-actions">
@@ -66,31 +92,9 @@
           <%= weekPowerplayTaken ? 'disabled' : '' %>>
         <span>⚡ Powerspiel ×3</span>
       </label>
-      <button type="submit" class="btn btn-save">Speichern</button>
     </div>
     <div class="tip-status" id="status-<%= game.id %>"></div>
   </form>
-  <% } else if (hasTip) { %>
-  <div class="tip-summary">
-    <div class="tip-tendency-display">
-      <% if (game.tip_tendency === 'H') { %><%= game.home_flag %> Heimsieg
-      <% } else if (game.tip_tendency === 'D') { %>🤝 Unentschieden
-      <% } else { %><%= game.away_flag %> Auswärtssieg<% } %>
-      <% if (game.tip_home !== null) { %>&nbsp;(<%= game.tip_home %>:<%= game.tip_away %>)<% } %>
-      <% if (isMyPowerplay) { %> ⚡<% } %>
-    </div>
-    <% if (isFinished && game.points !== null) { %>
-    <div class="points-breakdown">
-      <span class="points-earned <%= game.points > 0 ? 'points-green' : 'points-zero' %>">
-        +<%= game.points %> Pkt
-      </span>
-      <% if (game.power_bonus > 0) { %>
-      <span class="power-bonus-label">davon ⚡ +<%= game.power_bonus %></span>
-      <% } %>
-    </div>
-    <% } %>
-  </div>
-  <% } else if (!canTip) { %>
-  <div class="no-tip">Kein Tipp abgegeben</div>
   <% } %>
+
 </div>

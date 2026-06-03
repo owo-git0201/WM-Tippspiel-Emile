@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
@@ -10,13 +11,25 @@ const PORT = process.env.PORT || 3000;
 // WM-Sieger Deadline: nach Matchday 1 (alle Teams haben 1 Spiel gespielt) ~19. Juni 2026
 const CHAMPION_DEADLINE = new Date('2026-06-19T00:00:00');
 
+// Patenländer — nur Spiele mit mind. einem dieser Teams werden angezeigt
+const PATENLAENDER = new Set([
+  // Europa
+  'Deutschland','Frankreich','Spanien','England','Belgien','Niederlande',
+  'Portugal','Schweiz','Österreich','Kroatien','Norwegen','Schweden',
+  'Schottland','Tschechien','Bosnien-Herzegowina','Türkei',
+  // Amerika
+  'Brasilien','Argentinien','USA','Mexiko','Kanada','Kolumbien','Uruguay','Ecuador',
+  // Afrika / Asien / Ozeanien
+  'Japan','Südkorea','Marokko','Senegal','Elfenbeinküste','Ghana','Südafrika','Australien',
+]);
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(session({
-  secret: 'emile-wm2026-secret',
+  secret: process.env.SESSION_SECRET || 'emile-wm2026-fallback',
   resave: false,
   saveUninitialized: false,
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 }
@@ -65,13 +78,18 @@ app.get('/', async (req, res) => {
     return res.render('disqualified');
   }
 
-  const games = await all(`
+  const allGames = await all(`
     SELECT g.*,
       t.tip_tendency, t.tip_home, t.tip_away, t.is_powerplay, t.points, t.power_bonus
     FROM games g
     LEFT JOIN tips t ON t.game_id = g.id AND t.user_id = ?
     ORDER BY g.kickoff ASC
   `, [userId]);
+
+  // Nur Spiele mit mind. einem Patenland anzeigen
+  const games = allGames.filter(g =>
+    PATENLAENDER.has(g.home_team) || PATENLAENDER.has(g.away_team)
+  );
 
   // Powerspiel diese Woche bereits gesetzt?
   const weekStart = getWeekStart(new Date());
@@ -124,8 +142,8 @@ app.get('/', async (req, res) => {
   const championTip = await get('SELECT * FROM champion_tips WHERE user_id = ?', [userId]);
   const championOpen = new Date() < CHAMPION_DEADLINE;
 
-  // Alle Teams für WM-Sieger Auswahl
-  const allTeams = [...new Set(GAMES.map(g => g.home).concat(GAMES.map(g => g.away)))].sort();
+  // WM-Sieger Auswahl: nur Patenländer
+  const allTeams = [...PATENLAENDER].sort();
 
   res.render('index', {
     games, byDay, byGroup,
@@ -138,6 +156,7 @@ app.get('/', async (req, res) => {
 // WM-Sieger tippen
 app.post('/champion', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
+  if (req.session.user.role === 'admin') return res.redirect('/');
   if (new Date() >= CHAMPION_DEADLINE) return res.redirect('/');
   const { team } = req.body;
   if (!team) return res.redirect('/');

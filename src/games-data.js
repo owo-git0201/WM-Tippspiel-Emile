@@ -1,69 +1,104 @@
-// WM 2026 Gruppenphase - Spiele mit Patenländer-Fokus (alle 48 Gruppenspiele)
-// Quelle: FIFA WM 2026 offizieller Spielplan
+// WM 2026 Gruppenphase — alle 72 Gruppenspiele
+// Quelle: FIFA.com / Sky Sports / Sportschau (verifiziert Juni 2026)
+// Zeiten in MESZ (UTC+2)
 const GAMES = [
-  // === GRUPPE A ===
-  { home: 'Mexiko', away: 'Südafrika', home_flag: '🇲🇽', away_flag: '🇿🇦', kickoff: '2026-06-11 22:00', round: 'Gruppenphase', group: 'A' },
-  { home: 'USA', away: 'Kanada', home_flag: '🇺🇸', away_flag: '🇨🇦', kickoff: '2026-06-12 02:00', round: 'Gruppenphase', group: 'A' },
-  { home: 'Südafrika', away: 'Kanada', home_flag: '🇿🇦', away_flag: '🇨🇦', kickoff: '2026-06-16 22:00', round: 'Gruppenphase', group: 'A' },
-  { home: 'Mexiko', away: 'USA', home_flag: '🇲🇽', away_flag: '🇺🇸', kickoff: '2026-06-17 02:00', round: 'Gruppenphase', group: 'A' },
-  { home: 'Kanada', away: 'Mexiko', home_flag: '🇨🇦', away_flag: '🇲🇽', kickoff: '2026-06-21 22:00', round: 'Gruppenphase', group: 'A' },
-  { home: 'Südafrika', away: 'USA', home_flag: '🇿🇦', away_flag: '🇺🇸', kickoff: '2026-06-21 22:00', round: 'Gruppenphase', group: 'A' },
 
-  // === GRUPPE B ===
-  { home: 'Argentinien', away: 'Peru', home_flag: '🇦🇷', away_flag: '🇵🇪', kickoff: '2026-06-12 19:00', round: 'Gruppenphase', group: 'B' },
-  { home: 'Chile', away: 'Ecuador', home_flag: '🇨🇱', away_flag: '🇪🇨', kickoff: '2026-06-12 22:00', round: 'Gruppenphase', group: 'B' },
-  { home: 'Peru', away: 'Chile', home_flag: '🇵🇪', away_flag: '🇨🇱', kickoff: '2026-06-16 19:00', round: 'Gruppenphase', group: 'B' },
-  { home: 'Argentinien', away: 'Ecuador', home_flag: '🇦🇷', away_flag: '🇪🇨', kickoff: '2026-06-16 22:00', round: 'Gruppenphase', group: 'B' },
-  { home: 'Ecuador', away: 'Peru', home_flag: '🇪🇨', away_flag: '🇵🇪', kickoff: '2026-06-20 22:00', round: 'Gruppenphase', group: 'B' },
-  { home: 'Chile', away: 'Argentinien', home_flag: '🇨🇱', away_flag: '🇦🇷', kickoff: '2026-06-20 22:00', round: 'Gruppenphase', group: 'B' },
+  // === GRUPPE A: Mexiko · Südafrika · Südkorea · Tschechien ===
+  { home: 'Mexiko',      away: 'Südafrika',  home_flag: '🇲🇽', away_flag: '🇿🇦', kickoff: '2026-06-11 21:00', round: 'Gruppenphase', group: 'A' },
+  { home: 'Südkorea',    away: 'Tschechien', home_flag: '🇰🇷', away_flag: '🇨🇿', kickoff: '2026-06-12 04:00', round: 'Gruppenphase', group: 'A' },
+  { home: 'Tschechien',  away: 'Südafrika',  home_flag: '🇨🇿', away_flag: '🇿🇦', kickoff: '2026-06-18 18:00', round: 'Gruppenphase', group: 'A' },
+  { home: 'Mexiko',      away: 'Südkorea',   home_flag: '🇲🇽', away_flag: '🇰🇷', kickoff: '2026-06-19 03:00', round: 'Gruppenphase', group: 'A' },
+  { home: 'Südafrika',   away: 'Südkorea',   home_flag: '🇿🇦', away_flag: '🇰🇷', kickoff: '2026-06-25 03:00', round: 'Gruppenphase', group: 'A' },
+  { home: 'Tschechien',  away: 'Mexiko',     home_flag: '🇨🇿', away_flag: '🇲🇽', kickoff: '2026-06-25 03:00', round: 'Gruppenphase', group: 'A' },
 
-  // === GRUPPE C ===
-  { home: 'Deutschland', away: 'Kenia', home_flag: '🇩🇪', away_flag: '🇰🇪', kickoff: '2026-06-13 19:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Spanien', away: 'Brasilien', home_flag: '🇪🇸', away_flag: '🇧🇷', kickoff: '2026-06-13 22:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Brasilien', away: 'Deutschland', home_flag: '🇧🇷', away_flag: '🇩🇪', kickoff: '2026-06-17 19:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Kenia', away: 'Spanien', home_flag: '🇰🇪', away_flag: '🇪🇸', kickoff: '2026-06-17 22:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Deutschland', away: 'Spanien', home_flag: '🇩🇪', away_flag: '🇪🇸', kickoff: '2026-06-21 19:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Kenia', away: 'Brasilien', home_flag: '🇰🇪', away_flag: '🇧🇷', kickoff: '2026-06-21 19:00', round: 'Gruppenphase', group: 'C' },
+  // === GRUPPE B: Kanada · Bosnien-Herzegowina · Katar · Schweiz ===
+  { home: 'Kanada',              away: 'Bosnien-Herzegowina', home_flag: '🇨🇦', away_flag: '🇧🇦', kickoff: '2026-06-12 21:00', round: 'Gruppenphase', group: 'B' },
+  { home: 'Katar',               away: 'Schweiz',             home_flag: '🇶🇦', away_flag: '🇨🇭', kickoff: '2026-06-13 21:00', round: 'Gruppenphase', group: 'B' },
+  { home: 'Schweiz',             away: 'Bosnien-Herzegowina', home_flag: '🇨🇭', away_flag: '🇧🇦', kickoff: '2026-06-18 21:00', round: 'Gruppenphase', group: 'B' },
+  { home: 'Kanada',              away: 'Katar',               home_flag: '🇨🇦', away_flag: '🇶🇦', kickoff: '2026-06-19 00:00', round: 'Gruppenphase', group: 'B' },
+  { home: 'Schweiz',             away: 'Kanada',              home_flag: '🇨🇭', away_flag: '🇨🇦', kickoff: '2026-06-24 21:00', round: 'Gruppenphase', group: 'B' },
+  { home: 'Bosnien-Herzegowina', away: 'Katar',               home_flag: '🇧🇦', away_flag: '🇶🇦', kickoff: '2026-06-24 21:00', round: 'Gruppenphase', group: 'B' },
 
-  // === GRUPPE D ===
-  { home: 'Frankreich', away: 'Algerien', home_flag: '🇫🇷', away_flag: '🇩🇿', kickoff: '2026-06-13 02:00', round: 'Gruppenphase', group: 'D' },
-  { home: 'Portugal', away: 'Belgien', home_flag: '🇵🇹', away_flag: '🇧🇪', kickoff: '2026-06-14 19:00', round: 'Gruppenphase', group: 'D' },
-  { home: 'Algerien', away: 'Portugal', home_flag: '🇩🇿', away_flag: '🇵🇹', kickoff: '2026-06-18 19:00', round: 'Gruppenphase', group: 'D' },
-  { home: 'Frankreich', away: 'Belgien', home_flag: '🇫🇷', away_flag: '🇧🇪', kickoff: '2026-06-18 22:00', round: 'Gruppenphase', group: 'D' },
-  { home: 'Belgien', away: 'Algerien', home_flag: '🇧🇪', away_flag: '🇩🇿', kickoff: '2026-06-22 22:00', round: 'Gruppenphase', group: 'D' },
-  { home: 'Portugal', away: 'Frankreich', home_flag: '🇵🇹', away_flag: '🇫🇷', kickoff: '2026-06-22 22:00', round: 'Gruppenphase', group: 'D' },
+  // === GRUPPE C: Brasilien · Marokko · Haiti · Schottland ===
+  { home: 'Brasilien',  away: 'Marokko',   home_flag: '🇧🇷', away_flag: '🇲🇦', kickoff: '2026-06-13 00:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Haiti',      away: 'Schottland', home_flag: '🇭🇹', away_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', kickoff: '2026-06-14 03:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Schottland', away: 'Marokko',   home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇲🇦', kickoff: '2026-06-19 00:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Brasilien',  away: 'Haiti',     home_flag: '🇧🇷', away_flag: '🇭🇹', kickoff: '2026-06-20 02:30', round: 'Gruppenphase', group: 'C' },
+  { home: 'Marokko',    away: 'Haiti',     home_flag: '🇲🇦', away_flag: '🇭🇹', kickoff: '2026-06-24 00:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Schottland', away: 'Brasilien', home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇧🇷', kickoff: '2026-06-24 00:00', round: 'Gruppenphase', group: 'C' },
 
-  // === GRUPPE E ===
-  { home: 'England', away: 'Senegal', home_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', away_flag: '🇸🇳', kickoff: '2026-06-14 02:00', round: 'Gruppenphase', group: 'E' },
-  { home: 'Niederlande', away: 'Japan', home_flag: '🇳🇱', away_flag: '🇯🇵', kickoff: '2026-06-14 22:00', round: 'Gruppenphase', group: 'E' },
-  { home: 'Japan', away: 'England', home_flag: '🇯🇵', away_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', kickoff: '2026-06-18 02:00', round: 'Gruppenphase', group: 'E' },
-  { home: 'Senegal', away: 'Niederlande', home_flag: '🇸🇳', away_flag: '🇳🇱', kickoff: '2026-06-19 19:00', round: 'Gruppenphase', group: 'E' },
-  { home: 'England', away: 'Niederlande', home_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', away_flag: '🇳🇱', kickoff: '2026-06-22 02:00', round: 'Gruppenphase', group: 'E' },
-  { home: 'Japan', away: 'Senegal', home_flag: '🇯🇵', away_flag: '🇸🇳', kickoff: '2026-06-22 02:00', round: 'Gruppenphase', group: 'E' },
+  // === GRUPPE D: USA · Paraguay · Australien · Türkei ===
+  { home: 'USA',       away: 'Paraguay',   home_flag: '🇺🇸', away_flag: '🇵🇾', kickoff: '2026-06-13 03:00', round: 'Gruppenphase', group: 'D' },
+  { home: 'Australien', away: 'Türkei',   home_flag: '🇦🇺', away_flag: '🇹🇷', kickoff: '2026-06-14 06:00', round: 'Gruppenphase', group: 'D' },
+  { home: 'USA',       away: 'Australien', home_flag: '🇺🇸', away_flag: '🇦🇺', kickoff: '2026-06-19 21:00', round: 'Gruppenphase', group: 'D' },
+  { home: 'Türkei',    away: 'Paraguay',   home_flag: '🇹🇷', away_flag: '🇵🇾', kickoff: '2026-06-20 05:00', round: 'Gruppenphase', group: 'D' },
+  { home: 'Türkei',    away: 'USA',        home_flag: '🇹🇷', away_flag: '🇺🇸', kickoff: '2026-06-26 04:00', round: 'Gruppenphase', group: 'D' },
+  { home: 'Paraguay',  away: 'Australien', home_flag: '🇵🇾', away_flag: '🇦🇺', kickoff: '2026-06-26 04:00', round: 'Gruppenphase', group: 'D' },
 
-  // === GRUPPE F ===
-  { home: 'Marokko', away: 'Saudi-Arabien', home_flag: '🇲🇦', away_flag: '🇸🇦', kickoff: '2026-06-15 02:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Iran', away: 'Australien', home_flag: '🇮🇷', away_flag: '🇦🇺', kickoff: '2026-06-15 19:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Saudi-Arabien', away: 'Iran', home_flag: '🇸🇦', away_flag: '🇮🇷', kickoff: '2026-06-19 02:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Marokko', away: 'Australien', home_flag: '🇲🇦', away_flag: '🇦🇺', kickoff: '2026-06-19 22:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Australien', away: 'Saudi-Arabien', home_flag: '🇦🇺', away_flag: '🇸🇦', kickoff: '2026-06-23 19:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Iran', away: 'Marokko', home_flag: '🇮🇷', away_flag: '🇲🇦', kickoff: '2026-06-23 19:00', round: 'Gruppenphase', group: 'F' },
+  // === GRUPPE E: Deutschland · Curaçao · Elfenbeinküste · Ecuador ===
+  { home: 'Deutschland',    away: 'Curaçao',        home_flag: '🇩🇪', away_flag: '🇨🇼', kickoff: '2026-06-14 19:00', round: 'Gruppenphase', group: 'E' },
+  { home: 'Elfenbeinküste', away: 'Ecuador',         home_flag: '🇨🇮', away_flag: '🇪🇨', kickoff: '2026-06-15 01:00', round: 'Gruppenphase', group: 'E' },
+  { home: 'Deutschland',    away: 'Elfenbeinküste',  home_flag: '🇩🇪', away_flag: '🇨🇮', kickoff: '2026-06-20 22:00', round: 'Gruppenphase', group: 'E' },
+  { home: 'Ecuador',        away: 'Curaçao',         home_flag: '🇪🇨', away_flag: '🇨🇼', kickoff: '2026-06-21 02:00', round: 'Gruppenphase', group: 'E' },
+  { home: 'Curaçao',        away: 'Elfenbeinküste',  home_flag: '🇨🇼', away_flag: '🇨🇮', kickoff: '2026-06-25 22:00', round: 'Gruppenphase', group: 'E' },
+  { home: 'Ecuador',        away: 'Deutschland',     home_flag: '🇪🇨', away_flag: '🇩🇪', kickoff: '2026-06-25 22:00', round: 'Gruppenphase', group: 'E' },
 
-  // === GRUPPE G ===
-  { home: 'Italien', away: 'Türkei', home_flag: '🇮🇹', away_flag: '🇹🇷', kickoff: '2026-06-15 22:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Kroatien', away: 'Südkorea', home_flag: '🇭🇷', away_flag: '🇰🇷', kickoff: '2026-06-16 02:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Türkei', away: 'Kroatien', home_flag: '🇹🇷', away_flag: '🇭🇷', kickoff: '2026-06-20 02:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Südkorea', away: 'Italien', home_flag: '🇰🇷', away_flag: '🇮🇹', kickoff: '2026-06-20 19:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Italien', away: 'Kroatien', home_flag: '🇮🇹', away_flag: '🇭🇷', kickoff: '2026-06-24 22:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Südkorea', away: 'Türkei', home_flag: '🇰🇷', away_flag: '🇹🇷', kickoff: '2026-06-24 22:00', round: 'Gruppenphase', group: 'G' },
+  // === GRUPPE F: Niederlande · Japan · Schweden · Tunesien ===
+  { home: 'Niederlande', away: 'Japan',       home_flag: '🇳🇱', away_flag: '🇯🇵', kickoff: '2026-06-14 22:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Schweden',    away: 'Tunesien',    home_flag: '🇸🇪', away_flag: '🇹🇳', kickoff: '2026-06-15 04:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Niederlande', away: 'Schweden',    home_flag: '🇳🇱', away_flag: '🇸🇪', kickoff: '2026-06-20 21:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Tunesien',    away: 'Japan',       home_flag: '🇹🇳', away_flag: '🇯🇵', kickoff: '2026-06-21 06:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Tunesien',    away: 'Niederlande', home_flag: '🇹🇳', away_flag: '🇳🇱', kickoff: '2026-06-26 01:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Japan',       away: 'Schweden',    home_flag: '🇯🇵', away_flag: '🇸🇪', kickoff: '2026-06-26 01:00', round: 'Gruppenphase', group: 'F' },
 
-  // === GRUPPE H ===
-  { home: 'Kolumbien', away: 'Schweiz', home_flag: '🇨🇴', away_flag: '🇨🇭', kickoff: '2026-06-16 19:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Österreich', away: 'Ungarn', home_flag: '🇦🇹', away_flag: '🇭🇺', kickoff: '2026-06-17 02:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Schweiz', away: 'Österreich', home_flag: '🇨🇭', away_flag: '🇦🇹', kickoff: '2026-06-21 02:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Ungarn', away: 'Kolumbien', home_flag: '🇭🇺', away_flag: '🇨🇴', kickoff: '2026-06-21 02:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Kolumbien', away: 'Österreich', home_flag: '🇨🇴', away_flag: '🇦🇹', kickoff: '2026-06-25 19:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Ungarn', away: 'Schweiz', home_flag: '🇭🇺', away_flag: '🇨🇭', kickoff: '2026-06-25 19:00', round: 'Gruppenphase', group: 'H' },
+  // === GRUPPE G: Belgien · Ägypten · Iran · Neuseeland ===
+  { home: 'Belgien',    away: 'Ägypten',   home_flag: '🇧🇪', away_flag: '🇪🇬', kickoff: '2026-06-15 21:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Iran',       away: 'Neuseeland', home_flag: '🇮🇷', away_flag: '🇳🇿', kickoff: '2026-06-15 00:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Belgien',    away: 'Iran',       home_flag: '🇧🇪', away_flag: '🇮🇷', kickoff: '2026-06-21 21:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Neuseeland', away: 'Ägypten',   home_flag: '🇳🇿', away_flag: '🇪🇬', kickoff: '2026-06-22 03:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Neuseeland', away: 'Belgien',   home_flag: '🇳🇿', away_flag: '🇧🇪', kickoff: '2026-06-27 05:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Ägypten',    away: 'Iran',       home_flag: '🇪🇬', away_flag: '🇮🇷', kickoff: '2026-06-27 05:00', round: 'Gruppenphase', group: 'G' },
+
+  // === GRUPPE H: Spanien · Kapverdische Inseln · Saudi-Arabien · Uruguay ===
+  { home: 'Spanien',              away: 'Kapverdische Inseln', home_flag: '🇪🇸', away_flag: '🇨🇻', kickoff: '2026-06-15 18:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Saudi-Arabien',        away: 'Uruguay',            home_flag: '🇸🇦', away_flag: '🇺🇾', kickoff: '2026-06-15 00:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Spanien',              away: 'Saudi-Arabien',       home_flag: '🇪🇸', away_flag: '🇸🇦', kickoff: '2026-06-21 18:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Uruguay',              away: 'Kapverdische Inseln', home_flag: '🇺🇾', away_flag: '🇨🇻', kickoff: '2026-06-22 00:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Kapverdische Inseln',  away: 'Saudi-Arabien',       home_flag: '🇨🇻', away_flag: '🇸🇦', kickoff: '2026-06-27 02:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Uruguay',              away: 'Spanien',             home_flag: '🇺🇾', away_flag: '🇪🇸', kickoff: '2026-06-27 02:00', round: 'Gruppenphase', group: 'H' },
+
+  // === GRUPPE I: Frankreich · Senegal · Irak · Norwegen ===
+  { home: 'Frankreich', away: 'Senegal',   home_flag: '🇫🇷', away_flag: '🇸🇳', kickoff: '2026-06-16 21:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Irak',       away: 'Norwegen',  home_flag: '🇮🇶', away_flag: '🇳🇴', kickoff: '2026-06-16 00:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Frankreich', away: 'Irak',      home_flag: '🇫🇷', away_flag: '🇮🇶', kickoff: '2026-06-22 23:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Norwegen',   away: 'Senegal',   home_flag: '🇳🇴', away_flag: '🇸🇳', kickoff: '2026-06-23 02:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Norwegen',   away: 'Frankreich', home_flag: '🇳🇴', away_flag: '🇫🇷', kickoff: '2026-06-26 21:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Senegal',    away: 'Irak',      home_flag: '🇸🇳', away_flag: '🇮🇶', kickoff: '2026-06-26 21:00', round: 'Gruppenphase', group: 'I' },
+
+  // === GRUPPE J: Argentinien · Algerien · Österreich · Jordanien ===
+  { home: 'Argentinien', away: 'Algerien',   home_flag: '🇦🇷', away_flag: '🇩🇿', kickoff: '2026-06-17 03:00', round: 'Gruppenphase', group: 'J' },
+  { home: 'Österreich',  away: 'Jordanien',  home_flag: '🇦🇹', away_flag: '🇯🇴', kickoff: '2026-06-17 06:00', round: 'Gruppenphase', group: 'J' },
+  { home: 'Argentinien', away: 'Österreich', home_flag: '🇦🇷', away_flag: '🇦🇹', kickoff: '2026-06-22 19:00', round: 'Gruppenphase', group: 'J' },
+  { home: 'Jordanien',   away: 'Algerien',   home_flag: '🇯🇴', away_flag: '🇩🇿', kickoff: '2026-06-23 05:00', round: 'Gruppenphase', group: 'J' },
+  { home: 'Algerien',    away: 'Österreich', home_flag: '🇩🇿', away_flag: '🇦🇹', kickoff: '2026-06-28 04:00', round: 'Gruppenphase', group: 'J' },
+  { home: 'Jordanien',   away: 'Argentinien', home_flag: '🇯🇴', away_flag: '🇦🇷', kickoff: '2026-06-28 04:00', round: 'Gruppenphase', group: 'J' },
+
+  // === GRUPPE K: Portugal · DR Kongo · Usbekistan · Kolumbien ===
+  { home: 'Portugal',    away: 'DR Kongo',    home_flag: '🇵🇹', away_flag: '🇨🇩', kickoff: '2026-06-17 19:00', round: 'Gruppenphase', group: 'K' },
+  { home: 'Usbekistan',  away: 'Kolumbien',   home_flag: '🇺🇿', away_flag: '🇨🇴', kickoff: '2026-06-18 04:00', round: 'Gruppenphase', group: 'K' },
+  { home: 'Portugal',    away: 'Usbekistan',  home_flag: '🇵🇹', away_flag: '🇺🇿', kickoff: '2026-06-23 19:00', round: 'Gruppenphase', group: 'K' },
+  { home: 'Kolumbien',   away: 'DR Kongo',    home_flag: '🇨🇴', away_flag: '🇨🇩', kickoff: '2026-06-24 04:00', round: 'Gruppenphase', group: 'K' },
+  { home: 'Kolumbien',   away: 'Portugal',    home_flag: '🇨🇴', away_flag: '🇵🇹', kickoff: '2026-06-28 01:30', round: 'Gruppenphase', group: 'K' },
+  { home: 'DR Kongo',    away: 'Usbekistan',  home_flag: '🇨🇩', away_flag: '🇺🇿', kickoff: '2026-06-28 01:30', round: 'Gruppenphase', group: 'K' },
+
+  // === GRUPPE L: England · Kroatien · Ghana · Panama ===
+  { home: 'England',  away: 'Kroatien', home_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', away_flag: '🇭🇷', kickoff: '2026-06-17 22:00', round: 'Gruppenphase', group: 'L' },
+  { home: 'Ghana',    away: 'Panama',   home_flag: '🇬🇭', away_flag: '🇵🇦', kickoff: '2026-06-18 01:00', round: 'Gruppenphase', group: 'L' },
+  { home: 'England',  away: 'Ghana',    home_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', away_flag: '🇬🇭', kickoff: '2026-06-23 22:00', round: 'Gruppenphase', group: 'L' },
+  { home: 'Panama',   away: 'Kroatien', home_flag: '🇵🇦', away_flag: '🇭🇷', kickoff: '2026-06-24 01:00', round: 'Gruppenphase', group: 'L' },
+  { home: 'Panama',   away: 'England',  home_flag: '🇵🇦', away_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', kickoff: '2026-06-27 23:00', round: 'Gruppenphase', group: 'L' },
+  { home: 'Kroatien', away: 'Ghana',    home_flag: '🇭🇷', away_flag: '🇬🇭', kickoff: '2026-06-27 23:00', round: 'Gruppenphase', group: 'L' },
+
 ];
 
 module.exports = GAMES;
