@@ -1,7 +1,8 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, '..', 'data', 'tippspiel.db');
+// Auf Railway liegt das Persistent Volume unter /app/data, lokal unter ./data
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'data', 'tippspiel.db');
 
 const fs = require('fs');
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
