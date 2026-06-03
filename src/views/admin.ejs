@@ -102,9 +102,13 @@
                 <%= u.disqualified ? '✓ Entsperren' : '🚫 Sperren' %>
               </button>
             </form>
-            <form method="POST" action="/admin/user/<%= u.id %>/reset-password" style="display:inline">
-              <button type="submit" class="btn btn-sm" style="background:var(--gold3);color:#92400E;border:1px solid var(--gold2);" onclick="return confirm('Passwort für <%= u.display_name %> zurücksetzen?')">🔑 PW Reset</button>
+            <form method="POST" action="/admin/user/<%= u.id %>/reset-password" class="pw-reset-form">
+              <input type="text" name="new_password" placeholder="Neues Passwort" required minlength="6" class="score-input pw-reset-input">
+              <button type="submit" class="btn btn-sm" style="background:var(--gold3);color:#92400E;border:1px solid var(--gold2);">🔑 Setzen</button>
             </form>
+            <% if (u.temp_pw_plain) { %>
+            <span class="temp-pw-badge" title="Noch nicht geändert">🔓 <strong><%= u.temp_pw_plain %></strong></span>
+            <% } %>
           </div>
           <% } %>
         </td>

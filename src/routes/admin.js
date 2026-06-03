@@ -13,6 +13,16 @@ function flash(req, msg, type = 'success') {
   req.session.flash = { msg, type };
 }
 
+// 15 fussballthematische Temp-Passwörter — leicht kommunizierbar
+const TEMP_PASSWORDS = [
+  'Anpfiff26', 'Elfmeter7', 'Hattrick3', 'Abseits11', 'Dribbling',
+  'Freistoss', 'Torwart1', 'Eckball26', 'Foulspiel', 'Nachspiel5',
+  'Vorlage26', 'Abstieg99', 'Aufstieg1', 'Kapitaen7', 'Titelkampf'
+];
+function randomTempPw() {
+  return TEMP_PASSWORDS[Math.floor(Math.random() * TEMP_PASSWORDS.length)];
+}
+
 router.get('/', requireAdmin, async (req, res) => {
   const games = await all('SELECT * FROM games ORDER BY kickoff');
   const users = await all(`
@@ -118,14 +128,19 @@ router.post('/user/:id/disqualify', requireAdmin, async (req, res) => {
   res.redirect('/admin');
 });
 
-// Passwort-Reset: generiert Temp-Passwort, Admin gibt es weiter
+// Passwort-Reset: Admin gibt Passwort ein, Nutzer muss es beim nächsten Login ändern
 router.post('/user/:id/reset-password', requireAdmin, async (req, res) => {
   const user = await get('SELECT * FROM users WHERE id = ?', [req.params.id]);
   if (!user) return res.redirect('/admin');
-  const tempPw = Math.random().toString(36).slice(2, 8).toUpperCase() + Math.floor(Math.random() * 99);
-  const hash = await bcrypt.hash(tempPw, 10);
-  await run('UPDATE users SET password_hash = ?, must_change_pw = 1 WHERE id = ?', [hash, req.params.id]);
-  flash(req, `🔑 Temp-Passwort für ${user.display_name}: <strong>${tempPw}</strong> — Bitte an Familie weitergeben. Muss beim nächsten Login geändert werden.`);
+  const newPw = (req.body.new_password || '').trim();
+  if (!newPw || newPw.length < 6) {
+    flash(req, 'Passwort muss mindestens 6 Zeichen haben.', 'error');
+    return res.redirect('/admin');
+  }
+  const hash = await bcrypt.hash(newPw, 10);
+  await run('UPDATE users SET password_hash = ?, must_change_pw = 1, temp_pw_plain = ? WHERE id = ?',
+    [hash, newPw, req.params.id]);
+  flash(req, `🔑 Passwort für <strong>${user.display_name}</strong> gesetzt: <strong>${newPw}</strong> — sichtbar in der Tabelle bis zum ersten Login.`);
   res.redirect('/admin');
 });
 

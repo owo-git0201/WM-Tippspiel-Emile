@@ -5,8 +5,22 @@
       <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="auth-school-logo">
       <div class="auth-wm-badge">⚽ WM 2026 Tippspiel</div>
     </div>
+
+    <% const isReset = query && query.reset === '1'; %>
+    <% const resetPw = query && query.hint ? query.hint : ''; %>
+    <% const resetUser = query && query.u ? query.u : ''; %>
+
+    <% if (isReset) { %>
+    <h1 class="auth-title">Passwort zurückgesetzt</h1>
+    <div class="reset-pw-banner">
+      <div class="reset-pw-label">Dein temporäres Passwort:</div>
+      <div class="reset-pw-value"><%= resetPw %></div>
+      <div class="reset-pw-hint">Klicke auf „Einloggen &amp; Passwort ändern" — danach kannst du ein eigenes Passwort vergeben.</div>
+    </div>
+    <% } else { %>
     <h1 class="auth-title">Willkommen zurück!</h1>
     <p class="auth-sub">Melde dich an und tippe die WM 2026.</p>
+    <% } %>
 
     <% if (query && query.registered) { %>
     <div class="alert alert-success">Registrierung erfolgreich! Du kannst dich jetzt anmelden.</div>
@@ -18,14 +32,25 @@
     <form method="POST" action="/auth/login" class="auth-form">
       <div class="field">
         <label>Benutzername</label>
-        <input type="text" name="username" required autocomplete="username" placeholder="z.B. familie-wontke">
+        <input type="text" name="username" required autocomplete="username"
+          placeholder="z.B. familie-wontke"
+          value="<%= resetUser %>">
       </div>
       <div class="field">
         <label>Passwort</label>
-        <input type="password" name="password" required autocomplete="current-password">
+        <input type="<%= isReset ? 'text' : 'password' %>" name="password" required autocomplete="current-password"
+          value="<%= isReset ? resetPw : '' %>">
       </div>
-      <button type="submit" class="btn btn-primary btn-full">Anmelden</button>
+      <button type="submit" class="btn btn-primary btn-full">
+        <%= isReset ? 'Einloggen & Passwort ändern' : 'Anmelden' %>
+      </button>
     </form>
+
+    <% if (!isReset) { %>
+    <p class="auth-switch" style="margin-top:10px;">
+      <a href="/auth/forgot" class="forgot-link">Passwort vergessen?</a>
+    </p>
+    <% } %>
     <p class="auth-switch">Noch kein Konto? <a href="/auth/register">Jetzt registrieren</a></p>
   </div>
 </div>

@@ -32,6 +32,7 @@ db.serialize(() => {
   db.run(`ALTER TABLE users ADD COLUMN disqualified INTEGER DEFAULT 0`, () => {});
   db.run(`ALTER TABLE users ADD COLUMN must_change_pw INTEGER DEFAULT 0`, () => {});
   db.run(`ALTER TABLE users ADD COLUMN onboarded INTEGER DEFAULT 0`, () => {});
+  db.run(`ALTER TABLE users ADD COLUMN temp_pw_plain TEXT DEFAULT NULL`, () => {});
   db.run(`ALTER TABLE tips ADD COLUMN power_bonus INTEGER DEFAULT 0`, () => {});
 
   db.run(`CREATE TABLE IF NOT EXISTS games (

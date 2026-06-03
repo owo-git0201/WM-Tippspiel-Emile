@@ -74,6 +74,36 @@ document.querySelectorAll('.tip-form[data-autosave]').forEach(form => {
   form.querySelector(`[name="powerplay_${gameId}"]`)?.addEventListener('change', saveTip);
 });
 
+// Countdown bis nächstes Spiel
+const countdownBar = document.querySelector('.countdown-bar');
+if (countdownBar) {
+  const kickoff = new Date(countdownBar.dataset.kickoff);
+  const dEl = document.getElementById('cd-d');
+  const hEl = document.getElementById('cd-h');
+  const mEl = document.getElementById('cd-m');
+  const sEl = document.getElementById('cd-s');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateCountdown() {
+    const diff = kickoff - new Date();
+    if (diff <= 0) {
+      countdownBar.querySelector('.countdown-timer').innerHTML = '<span style="font-size:.9rem;opacity:.7">Läuft gerade!</span>';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    dEl.textContent = pad(d);
+    hEl.textContent = pad(h);
+    mEl.textContent = pad(m);
+    sEl.textContent = pad(s);
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
 // View Tabs (Tag / Gruppe)
 document.querySelectorAll('.view-tabs .tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {

@@ -3,11 +3,11 @@
   const isPast = new Date() >= kickoff;
   const isFinished = game.finished;
   const hasTip = game.tip_tendency;
-  const canTip = !isPast && !isFinished && user.role !== 'admin';
+  const canTip = !isPast && !isFinished;
   const isMyPowerplay = powerplayUsed && powerplayUsed == game.id;
   const weekPowerplayTaken = powerplayUsed && !isMyPowerplay;
 %>
-<div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %>">
+<div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %> <%= hasTip ? 'game-tipped' : '' %>">
 
   <div class="game-header">
     <span class="game-time"><%= kickoff.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) %> Uhr</span>
@@ -47,7 +47,7 @@
     </div>
     <% if (game.points !== null) { %>
     <div class="points-breakdown">
-      <span class="points-earned <%= game.points > 0 ? 'points-green' : 'points-zero' %>">
+      <span class="points-earned <%= game.points > 0 ? 'points-green points-pop' : 'points-zero' %>">
         <%= game.points > 0 ? '+' + game.points : '0' %> Pkt<% if (game.power_bonus > 0) { %> <span class="powerplay-multiplier-tag">⚡×3</span><% } %>
       </span>
     </div>

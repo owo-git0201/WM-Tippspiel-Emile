@@ -44,7 +44,42 @@ nav { background: var(--green); box-shadow: 0 2px 16px rgba(0,0,0,.2); position:
 main { flex: 1; }
 
 /* HERO */
-.page-hero { background: linear-gradient(135deg, #1A3A20 0%, var(--green) 60%, #E8520A 100%); padding: 48px 24px; }
+.page-hero { background: linear-gradient(135deg, #1A3A20 0%, var(--green) 60%, #E8520A 100%); padding: 48px 24px 32px; }
+
+/* FORTSCHRITTSBALKEN */
+.tip-progress-wrap { margin-top: 20px; }
+.tip-progress-label { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.tip-progress-count { font-size: 1.4rem; font-weight: 900; color: #fff; font-family: var(--font-serif); }
+.tip-progress-text { font-size: .78rem; color: rgba(255,255,255,.65); }
+.tip-progress-bar { height: 8px; background: rgba(255,255,255,.2); border-radius: 99px; overflow: hidden; }
+.tip-progress-fill { height: 100%; background: linear-gradient(90deg, #4CAF56, #F59E0B); border-radius: 99px; transition: width .6s ease; }
+.tip-progress-done { margin-top: 6px; font-size: .75rem; color: #4CAF56; font-weight: 700; letter-spacing: .02em; }
+
+/* COUNTDOWN BANNER */
+.countdown-bar { background: #1A3A20; border-bottom: 1px solid rgba(255,255,255,.08); padding: 14px 24px; }
+.countdown-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.countdown-game { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: rgba(255,255,255,.75); }
+.countdown-flag { font-size: 1.1rem; }
+.countdown-teams { font-weight: 600; color: #fff; }
+.countdown-timer { display: flex; align-items: center; gap: 4px; }
+.countdown-unit { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,.1); border-radius: 8px; padding: 6px 10px; min-width: 44px; }
+.countdown-num { font-size: 1.3rem; font-weight: 900; color: #fff; font-family: var(--font-serif); line-height: 1; }
+.countdown-label { font-size: .55rem; color: rgba(255,255,255,.5); text-transform: uppercase; letter-spacing: .08em; margin-top: 2px; }
+.countdown-sep { font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,.4); margin: 0 2px; padding-bottom: 8px; }
+
+/* PUNKTE-ANIMATION */
+@keyframes pointsPop {
+  0%   { transform: scale(0.4); opacity: 0; }
+  60%  { transform: scale(1.25); }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes pointsGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(74,175,80,0); }
+  50%       { box-shadow: 0 0 12px 4px rgba(74,175,80,.4); }
+}
+.points-pop { animation: pointsPop .5s cubic-bezier(.34,1.56,.64,1) both, pointsGlow 1.2s ease .4s 2; }
+
 .page-hero-sm { padding: 32px 24px; }
 .hero-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
 .hero-text h1 { font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 900; color: #fff; margin-bottom: 8px; }
@@ -76,9 +111,10 @@ main { flex: 1; }
 .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
 
 /* GAME CARD */
-.game-card { background: var(--card); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: box-shadow .2s; }
+.game-card { background: var(--card); border: 1.5px solid var(--border); border-left: 4px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); transition: box-shadow .2s; }
 .game-card:hover { box-shadow: var(--shadow-lg); }
-.game-finished { opacity: .85; border-color: #C8C0B0; }
+.game-card.game-tipped { border-left-color: var(--green2); }
+.game-finished { opacity: .85; border-color: #C8C0B0; border-left-color: #C8C0B0; }
 .game-live { border-color: var(--orange); }
 .game-powerplay { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(245,158,11,.2); }
 
@@ -143,7 +179,12 @@ main { flex: 1; }
 .auth-page { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 120px); padding: 40px 16px; }
 .auth-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow-lg); }
 .auth-card-wide { max-width: 560px; }
-.auth-logo { text-align: center; margin-bottom: 28px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.auth-logo { text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.reset-pw-banner { background: var(--gold3); border: 2px solid var(--gold2); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; text-align: center; }
+.reset-pw-label { font-size: .78rem; color: #92400E; font-weight: 600; margin-bottom: 6px; }
+.reset-pw-value { font-size: 1.6rem; font-weight: 900; color: #92400E; letter-spacing: .04em; margin-bottom: 8px; font-family: var(--font-serif); }
+.reset-pw-hint { font-size: .75rem; color: #92400E; opacity: .8; }
+.forgot-link { color: var(--text3); font-size: .85rem; text-decoration: underline; }
 .auth-school-logo { height: 36px; display: block; }
 .auth-wm-badge { display: inline-block; background: var(--green); color: #fff; font-size: .75rem; font-weight: 800; padding: 4px 14px; border-radius: 20px; }
 .auth-title { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 900; text-align: center; margin-bottom: 6px; }
@@ -188,6 +229,12 @@ main { flex: 1; }
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
+.pre-tournament-box { background: var(--card); border-radius: var(--radius); padding: 28px 24px; box-shadow: var(--shadow); text-align: center; }
+.pre-tournament-title { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; color: var(--green); margin-bottom: 6px; }
+.pre-tournament-sub { font-size: .88rem; color: var(--text2); margin-bottom: 20px; }
+.participant-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.participant-chip { background: var(--green3); border: 1.5px solid var(--green2); color: var(--green); font-size: .82rem; font-weight: 600; padding: 6px 14px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+.participant-me { background: var(--green); color: #fff; border-color: var(--green); }
 .ranking-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 .ranking-table th { background: var(--green); color: #fff; font-size: .72rem; font-weight: 700; padding: 10px 14px; text-align: left; }
 .ranking-table td { padding: 12px 14px; font-size: .83rem; border-bottom: 1px solid var(--border); }
@@ -287,6 +334,9 @@ footer { background: var(--green); color: rgba(255,255,255,.7); padding: 20px 24
 .disq-tag { background: #FEE2E2; color: var(--red); font-size: .6rem; font-weight: 800; padding: 1px 6px; border-radius: 4px; text-decoration: none; display: inline-flex; align-items: center; gap: 2px; }
 .btn-disq { background: var(--red); color: #fff; }
 .row-admin td { color: var(--text3); font-style: italic; }
+.temp-pw-badge { font-size: .78rem; background: var(--gold3); border: 1px solid var(--gold2); color: #92400E; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
+.pw-reset-form { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.pw-reset-input { width: 120px; font-size: .82rem; padding: 4px 8px; }
 .footer-powered { font-weight: 600; color: rgba(255,255,255,.9); }
 .btn-disq:hover { background: #b91c1c; }
 .btn-restore { background: var(--green3); color: var(--green); border: 1px solid var(--green2); }

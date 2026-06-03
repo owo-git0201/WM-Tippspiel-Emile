@@ -5,7 +5,22 @@
     <div class="hero-text">
       <h1>&#x26BD; WM 2026 Tippspiel</h1>
       <p class="hero-powered"><em>Powered by AK Sport</em></p>
+
+      <!-- FORTSCHRITTSBALKEN -->
+      <div class="tip-progress-wrap">
+        <div class="tip-progress-label">
+          <span class="tip-progress-count"><%= tippedCount %> / <%= totalGames %></span>
+          <span class="tip-progress-text">Spiele getippt</span>
+        </div>
+        <div class="tip-progress-bar">
+          <div class="tip-progress-fill" style="width:<%= totalGames > 0 ? Math.round(tippedCount/totalGames*100) : 0 %>%"></div>
+        </div>
+        <% if (tippedCount === totalGames && totalGames > 0) { %>
+        <div class="tip-progress-done">&#x2713; Alle Spiele getippt!</div>
+        <% } %>
+      </div>
     </div>
+
     <div class="hero-right">
       <div class="scoring-legend">
         <div class="legend-item"><span class="badge badge-green">2 Pkt</span> Tendenz</div>
@@ -17,11 +32,33 @@
       <% if (powerplayUsed) { %>
       <div class="hero-powerplay-banner hero-powerplay-set">&#x26A1; Powerspiel diese Woche bereits gesetzt.</div>
       <% } else { %>
-      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> W&auml;hle ein Spiel pro Woche &ndash; Punkte &times;3! Mutige werden belohnt.</div>
+      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> W&auml;hle ein Spiel pro Woche &ndash; Punkte &times;3!</div>
       <% } %>
     </div>
   </div>
 </div>
+
+<!-- COUNTDOWN BANNER -->
+<% if (nextGame) { %>
+<div class="countdown-bar" data-kickoff="<%= new Date(nextGame.kickoff).toISOString() %>">
+  <div class="countdown-inner">
+    <div class="countdown-game">
+      <span class="countdown-flag"><%= nextGame.home_flag %></span>
+      <span class="countdown-teams"><%= nextGame.home_team %> vs <%= nextGame.away_team %></span>
+      <span class="countdown-flag"><%= nextGame.away_flag %></span>
+    </div>
+    <div class="countdown-timer">
+      <div class="countdown-unit"><span class="countdown-num" id="cd-d">--</span><span class="countdown-label">T</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-h">--</span><span class="countdown-label">Std</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-m">--</span><span class="countdown-label">Min</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-unit"><span class="countdown-num" id="cd-s">--</span><span class="countdown-label">Sek</span></div>
+    </div>
+  </div>
+</div>
+<% } %>
 
 <div class="page-content">
 
@@ -69,7 +106,8 @@
   <!-- VIEW TABS -->
   <div class="view-tabs">
     <button class="tab-btn active" data-view="day">&#x1F4C5; Nach Tag</button>
-    <button class="tab-btn" data-view="group">&#x1F5C2;&#xFE0F; Nach Gruppe</button>
+    <button class="tab-btn" data-view="matchday">&#x26BD; Spieltag</button>
+    <button class="tab-btn" data-view="group">&#x1F5C2; Nach Gruppe</button>
   </div>
 
   <!-- NACH TAG -->
@@ -79,6 +117,20 @@
       <h2 class="group-title"><%= dayKey %></h2>
       <div class="games-grid">
         <% byDay[dayKey].forEach(game => { %>
+        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </div>
+
+  <!-- NACH SPIELTAG -->
+  <div class="view-panel" id="view-matchday">
+    <% Object.keys(byMatchday).forEach(mdKey => { %>
+    <div class="game-group">
+      <h2 class="group-title"><%= mdKey %></h2>
+      <div class="games-grid">
+        <% byMatchday[mdKey].forEach(game => { %>
         <%- include('partials/game-card', { game, powerplayUsed }) %>
         <% }) %>
       </div>

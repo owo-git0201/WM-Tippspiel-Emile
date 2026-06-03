@@ -1,10 +1,10 @@
 const ROUND_MULTIPLIERS = {
-  'Gruppenphase': 1,
-  'Achtelfinale': 1,
-  'Viertelfinale': 1,
-  'Halbfinale': 1,
-  'Spiel um Platz 3': 1,
-  'Finale': 1,
+  'Gruppenphase':    1,
+  'Achtelfinale':    2,
+  'Viertelfinale':   2,
+  'Halbfinale':      3,
+  'Spiel um Platz 3': 2,
+  'Finale':          4,
 };
 
 const POINTS_TENDENCY = 2;

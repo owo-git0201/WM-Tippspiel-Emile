@@ -17,6 +17,21 @@
 
   <!-- Gesamt -->
   <div class="tab-panel active" id="tab-overall">
+    <% if (!hasResults) { %>
+    <div class="pre-tournament-box">
+      <p class="pre-tournament-title">&#x26BD; Das Turnier hat noch nicht begonnen</p>
+      <p class="pre-tournament-sub">Die Rangliste startet nach dem ersten Spieltag. Aber schon dabei:</p>
+      <div class="participant-list">
+        <% overall.forEach(u => { %>
+        <div class="participant-chip <%= u.id === user.id ? 'participant-me' : '' %>">
+          <%= u.role === 'schulfamilie' ? '👨‍👩‍👧‍👦' : '🏫' %>
+          <%= u.display_name %>
+          <% if (u.id === user.id) { %><span class="you-tag">Du</span><% } %>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <% } else { %>
     <table class="ranking-table">
       <thead>
         <tr><th>#</th><th>Name</th><th>Gruppe</th><th>Klasse(n)</th><th>Punkte</th><th class="points-detail">davon ⚡</th><th class="points-detail">🏆</th></tr>
@@ -43,10 +58,11 @@
         </tr>
         <% }) %>
         <% if (!overall.length) { %>
-        <tr><td colspan="7" class="empty-state">Noch keine Tipps abgegeben — sei der Erste!</td></tr>
+        <tr><td colspan="7" class="empty-state">Noch keine Teilnehmer registriert.</td></tr>
         <% } %>
       </tbody>
     </table>
+    <% } %>
   </div>
 
   <!-- Schulfamilien -->

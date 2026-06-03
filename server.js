@@ -4,6 +4,7 @@ const session = require('express-session');
 const path = require('path');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
+const { getMatchdayBounds } = require('./src/matchdays');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -91,14 +92,13 @@ app.get('/', async (req, res) => {
     PATENLAENDER.has(g.home_team) || PATENLAENDER.has(g.away_team)
   );
 
-  // Powerspiel diese Woche bereits gesetzt?
-  const weekStart = getWeekStart(new Date());
-  const weekEnd = getWeekEnd(new Date());
-  const powerplayUsed = await get(
+  // Powerspiel diesen Spieltag bereits gesetzt? (identisch zur Logik in tips.js)
+  const { start: mdStart, end: mdEnd } = getMatchdayBounds(new Date());
+  const powerplayUsed = mdStart ? await get(
     `SELECT t.id, g.id as game_id FROM tips t JOIN games g ON t.game_id = g.id
      WHERE t.user_id = ? AND t.is_powerplay = 1 AND g.kickoff >= ? AND g.kickoff < ?`,
-    [userId, weekStart, weekEnd]
-  );
+    [userId, mdStart, mdEnd]
+  ) : null;
 
   // Heute und nächste Spiele
   const todayStr = new Date().toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit' });
@@ -129,6 +129,20 @@ app.get('/', async (req, res) => {
     byGroup[key].push(g);
   }
 
+  // Gruppiere nach Spieltag (1/2/3 anhand Datum)
+  function getMatchdayLabel(kickoff) {
+    const d = new Date(kickoff);
+    if (d < new Date('2026-06-18T00:00:00')) return '1. Spieltag';
+    if (d < new Date('2026-06-24T00:00:00')) return '2. Spieltag';
+    return '3. Spieltag';
+  }
+  const byMatchday = {};
+  for (const g of games) {
+    const key = getMatchdayLabel(g.kickoff);
+    if (!byMatchday[key]) byMatchday[key] = [];
+    byMatchday[key].push(g);
+  }
+
   // Powerspiel nach Anpfiff sichtbar machen (welches Spiel hat welche Familie als Powerspiel)
   const visiblePowerplays = await all(
     `SELECT t.game_id, u.display_name FROM tips t
@@ -138,6 +152,12 @@ app.get('/', async (req, res) => {
     [new Date().toISOString()]
   );
 
+  // Gamification: Fortschritt + nächstes Spiel
+  const now = new Date();
+  const tippedCount = games.filter(g => g.tip_tendency).length;
+  const totalGames = games.length;
+  const nextGame = games.find(g => new Date(g.kickoff) > now && !g.finished) || null;
+
   // WM-Sieger Tipp
   const championTip = await get('SELECT * FROM champion_tips WHERE user_id = ?', [userId]);
   const championOpen = new Date() < CHAMPION_DEADLINE;
@@ -146,7 +166,8 @@ app.get('/', async (req, res) => {
   const allTeams = [...PATENLAENDER].sort();
 
   res.render('index', {
-    games, byDay, byGroup,
+    games, byDay, byGroup, byMatchday,
+    tippedCount, totalGames, nextGame,
     powerplayUsed: powerplayUsed ? powerplayUsed.game_id : null,
     championTip, championOpen, allTeams,
     todayStr, nextDate, visiblePowerplays
@@ -210,7 +231,8 @@ app.get('/ranking', async (req, res) => {
     `, [cls.id, cls.id]);
   }
 
-  res.render('ranking', { overall, classRankings, classes });
+  const firstResult = await get('SELECT id FROM games WHERE finished = 1 LIMIT 1');
+  res.render('ranking', { overall, classRankings, classes, hasResults: !!firstResult });
 });
 
 function getWeekStart(date) {

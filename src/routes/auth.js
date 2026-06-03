@@ -41,7 +41,7 @@ router.post('/change-password', async (req, res) => {
     return res.render('change-password', { error: 'Passwörter stimmen nicht überein.' });
   }
   const hash = await bcrypt.hash(password, 10);
-  await run('UPDATE users SET password_hash = ?, must_change_pw = 0 WHERE id = ?',
+  await run('UPDATE users SET password_hash = ?, must_change_pw = 0, temp_pw_plain = NULL WHERE id = ?',
     [hash, req.session.user.id]);
 
   const user = await get('SELECT * FROM users WHERE id = ?', [req.session.user.id]);
@@ -88,6 +88,34 @@ router.post('/register', async (req, res) => {
   } catch (e) {
     res.render('register', { error: 'Registrierung fehlgeschlagen. Bitte erneut versuchen.', classes });
   }
+});
+
+// Passwort vergessen
+router.get('/forgot', (req, res) => {
+  res.render('forgot-password', { error: null });
+});
+
+router.post('/forgot', async (req, res) => {
+  const username = (req.body.username || '').trim().toLowerCase();
+  const user = await get('SELECT * FROM users WHERE username = ?', [username]);
+  if (!user) {
+    return res.render('forgot-password', { error: 'Benutzername nicht gefunden.' });
+  }
+  if (user.role === 'admin') {
+    return res.render('forgot-password', { error: 'Für Admin-Konten ist kein Self-Service-Reset möglich.' });
+  }
+  // Temp-PW aus Liste
+  const TEMP_PASSWORDS = [
+    'Anpfiff26','Elfmeter7','Hattrick3','Abseits11','Dribbling',
+    'Freistoss','Torwart1','Eckball26','Foulspiel','Nachspiel5',
+    'Vorlage26','Abstieg99','Aufstieg1','Kapitaen7','Titelkampf'
+  ];
+  const tempPw = TEMP_PASSWORDS[Math.floor(Math.random() * TEMP_PASSWORDS.length)];
+  const bcrypt = require('bcryptjs');
+  const hash = await bcrypt.hash(tempPw, 10);
+  await run('UPDATE users SET password_hash = ?, must_change_pw = 1, temp_pw_plain = ? WHERE id = ?',
+    [hash, tempPw, user.id]);
+  res.redirect(`/auth/login?reset=1&u=${encodeURIComponent(username)}&hint=${encodeURIComponent(tempPw)}`);
 });
 
 router.get('/logout', (req, res) => {
