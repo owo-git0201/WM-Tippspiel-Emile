@@ -6,8 +6,23 @@
     <span>🌍 USA · Kanada · Mexiko · 11. Juni – 19. Juli 2026</span>
     <span class="footer-sep">·</span>
     <span class="footer-powered">Powered by AK Sport</span>
+    <span class="footer-sep">·</span>
+    <button class="help-btn" onclick="document.getElementById('help-modal').classList.add('active')">❓ Hilfe</button>
   </div>
 </footer>
+
+<!-- Hilfe-Popup -->
+<div class="help-modal" id="help-modal">
+  <div class="help-modal-box">
+    <button class="help-modal-close" onclick="document.getElementById('help-modal').classList.remove('active')">✕</button>
+    <div class="help-modal-icon">❓</div>
+    <h3 class="help-modal-title">Brauchst du Hilfe?</h3>
+    <p class="help-modal-text">Wenn du wirklich nicht weiterkommst, meld dich gerne kurz bei uns:</p>
+    <a class="help-modal-mail" href="mailto:ak-bewegung@emile-montessori.de">ak-bewegung@emile-montessori.de</a>
+    <p class="help-modal-sub">Wir melden uns so schnell wie möglich. 🙌</p>
+  </div>
+</div>
+
 <script src="/js/app.js"></script>
 </body>
 </html>
