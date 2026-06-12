@@ -181,7 +181,7 @@ main { flex: 1; }
 .auth-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 20px; padding: 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
 
 /* SPÄTSTARTER-KOMMUNIKATION */
-.latejoin-ribbon { position: absolute; top: 26px; right: -44px; transform: rotate(45deg); background: linear-gradient(90deg, #F59E0B, #D97706); color: #fff; font-size: .68rem; font-weight: 800; padding: 5px 50px; letter-spacing: .02em; box-shadow: 0 2px 8px rgba(0,0,0,.18); pointer-events: none; }
+.latejoin-ribbon { position: absolute; top: 30px; right: -34px; width: 160px; text-align: center; white-space: nowrap; transform: rotate(45deg); background: linear-gradient(135deg, #F59E0B, #D97706); color: #fff; font-size: .7rem; font-weight: 900; font-family: var(--font-sans); text-transform: uppercase; letter-spacing: .07em; padding: 6px 0; box-shadow: 0 2px 8px rgba(0,0,0,.22); pointer-events: none; z-index: 1; }
 .latejoin-note { background: var(--gold3); border: 1px solid rgba(245,158,11,.45); color: #92400E; border-radius: 8px; padding: 9px 12px; font-size: .76rem; line-height: 1.5; margin-bottom: 16px; }
 .latejoin-banner { width: min(1200px, calc(100% - 32px)); margin: 14px auto 0; padding: 10px 16px; background: var(--gold3); border: 1.5px dashed rgba(245,158,11,.55); border-radius: 10px; font-size: .82rem; line-height: 1.5; color: #92400E; display: flex; gap: 10px; align-items: center; }
 .latejoin-banner .latejoin-dice { font-size: 1.3rem; flex-shrink: 0; }
