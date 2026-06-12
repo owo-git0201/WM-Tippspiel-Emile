@@ -38,6 +38,14 @@
   </div>
 </div>
 
+<!-- SPÄTSTARTER-BANNER -->
+<% if (typeof lateJoinOpen !== 'undefined' && lateJoinOpen) { %>
+<div class="latejoin-banner">
+  <span class="latejoin-dice">🎲</span>
+  <span><strong>Spätstarter willkommen!</strong> Wer jetzt noch einsteigt, bekommt bereits gespielte Partien automatisch aus den abgegebenen Tipps eines zufälligen Mitspielers zugeteilt — gleiche Chancen für alle. Sagt's weiter: Anmeldung bis Ende der Gruppenphase möglich!</span>
+</div>
+<% } %>
+
 <!-- COUNTDOWN BANNER -->
 <% if (nextGame) { %>
 <div class="countdown-bar" data-kickoff="<%= new Date(nextGame.kickoff).toISOString() %>">

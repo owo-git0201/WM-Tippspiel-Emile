@@ -6,6 +6,7 @@
   const canTip = !isPast && !isFinished;
   const isMyPowerplay = powerplayUsed && powerplayUsed == game.id;
   const weekPowerplayTaken = powerplayUsed && !isMyPowerplay;
+  const isAutoTip = hasTip && game.is_auto;
 %>
 <div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %> <%= hasTip ? 'game-tipped' : '' %>">
 
@@ -16,6 +17,7 @@
     <% if (isFinished) { %><span class="finished-tag">Abgeschlossen</span><% } %>
     <% if (isPast && !isFinished) { %><span class="live-tag">Läuft</span><% } %>
     <% if (canTip && hasTip) { %><span class="tip-saved-badge">✓ getippt</span><% } %>
+    <% if (isAutoTip) { %><span class="auto-tip-tag" title="Bei deiner Spätanmeldung automatisch zugelost: der Tipp eines zufälligen Mitspielers.">🎲 Auto-Tipp</span><% } %>
   </div>
 
   <div class="game-matchup">

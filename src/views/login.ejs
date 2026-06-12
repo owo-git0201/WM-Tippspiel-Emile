@@ -1,6 +1,8 @@
 <%- include('partials/header') %>
 <div class="auth-page">
-  <div class="auth-card">
+  <% const lateJoinOpen = typeof lateOpen !== 'undefined' && lateOpen; %>
+  <div class="auth-card <%= lateJoinOpen ? 'has-topstrip' : '' %>">
+    <% if (lateJoinOpen) { %><div class="latejoin-topstrip">🎲 Jetzt noch einsteigen — Anmeldung bis Ende der Gruppenphase!</div><% } %>
     <div class="auth-logo">
       <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="auth-school-logo">
       <div class="auth-wm-badge">⚽ WM 2026 Tippspiel</div>
@@ -20,6 +22,9 @@
     <% } else { %>
     <h1 class="auth-title">⚽ Mitfiebern. Mittippen. Mitgewinnen.</h1>
     <p class="auth-sub">Meld dich an und zeig, was du drauf hast.</p>
+    <% if (lateJoinOpen) { %>
+    <div class="latejoin-note">🎲 <strong>Spät dran? Kein Problem!</strong> Bereits gespielte Partien werden dir automatisch aus einem bereits getippten Ergebnis eines Mitspielers zugelost — du startest mit der gleichen Punktechance wie alle anderen.</div>
+    <% } %>
     <% } %>
 
     <% if (query && query.registered) { %>

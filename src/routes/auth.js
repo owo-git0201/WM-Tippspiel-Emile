@@ -1,11 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { run, get, all } = require('../db');
+const { assignAutoTips, assignAutoChampion } = require('../late-join');
+const { REGISTRATION_DEADLINE, CHAMPION_DEADLINE } = require('../matchdays');
 const router = express.Router();
+
+const REGISTRATION_CLOSED_MSG = 'Leider zu spät — die Anmeldung war nur bis zum Ende der Gruppenphase möglich. Aber gute Nachricht: Die EM ist schon wieder in zwei Jahren! ⚽';
+
+function lateOpen() {
+  return new Date() < REGISTRATION_DEADLINE;
+}
 
 router.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/');
-  res.render('login', { error: null, query: req.query });
+  res.render('login', { error: null, query: req.query, lateOpen: lateOpen() });
 });
 
 router.post('/login', async (req, res) => {
@@ -13,7 +21,7 @@ router.post('/login', async (req, res) => {
   try {
     const user = await get('SELECT * FROM users WHERE username = ?', [username.trim().toLowerCase()]);
     if (!user || !await bcrypt.compare(password, user.password_hash)) {
-      return res.render('login', { error: 'Benutzername oder Passwort falsch.', query: req.query });
+      return res.render('login', { error: 'Benutzername oder Passwort falsch.', query: req.query, lateOpen: lateOpen() });
     }
     req.session.user = { id: user.id, display_name: user.display_name, role: user.role, username: user.username };
 
@@ -21,7 +29,7 @@ router.post('/login', async (req, res) => {
     if (!user.onboarded) return res.redirect('/onboarding');
     res.redirect('/');
   } catch (e) {
-    res.render('login', { error: 'Fehler beim Login.', query: req.query });
+    res.render('login', { error: 'Fehler beim Login.', query: req.query, lateOpen: lateOpen() });
   }
 });
 
@@ -52,6 +60,9 @@ router.post('/change-password', async (req, res) => {
 router.get('/register', async (req, res) => {
   if (req.session.user) return res.redirect('/');
   const classes = await all('SELECT * FROM classes ORDER BY name');
+  if (new Date() >= REGISTRATION_DEADLINE) {
+    return res.render('register', { error: REGISTRATION_CLOSED_MSG, classes, closed: true });
+  }
   res.render('register', { error: null, classes });
 });
 
@@ -59,6 +70,9 @@ router.post('/register', async (req, res) => {
   const { display_name, username, password, password2, role, class1_id, class2_id } = req.body;
   const classes = await all('SELECT * FROM classes ORDER BY name');
 
+  if (new Date() >= REGISTRATION_DEADLINE) {
+    return res.render('register', { error: REGISTRATION_CLOSED_MSG, classes, closed: true });
+  }
   if (!display_name || !username || !password) {
     return res.render('register', { error: 'Bitte alle Pflichtfelder ausfüllen.', classes });
   }
@@ -80,10 +94,23 @@ router.post('/register', async (req, res) => {
     const hash = await bcrypt.hash(password, 10);
     const c1 = class1_id || null;
     const c2 = (class2_id && class2_id !== class1_id) ? class2_id : null;
-    await run(
+    const result = await run(
       'INSERT INTO users (display_name, username, password_hash, role, class1_id, class2_id) VALUES (?,?,?,?,?,?)',
       [display_name.trim(), username.trim().toLowerCase(), hash, safeRole, c1, c2]
     );
+
+    // Spätanmelder: verpasste Spiele per Zufallszug aus echten Mitspieler-Tipps füllen.
+    // Fehler hier dürfen die Registrierung nicht scheitern lassen.
+    try {
+      const now = new Date();
+      await assignAutoTips(result.lastID, now);
+      if (now >= CHAMPION_DEADLINE) {
+        await assignAutoChampion(result.lastID);
+      }
+    } catch (e) {
+      console.error('Spätanmelder-Zulosung fehlgeschlagen für User', result.lastID, e);
+    }
+
     res.redirect('/auth/login?registered=1');
   } catch (e) {
     res.render('register', { error: 'Registrierung fehlgeschlagen. Bitte erneut versuchen.', classes });

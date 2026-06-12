@@ -86,7 +86,7 @@
     <tbody>
       <% users.forEach(u => { %>
       <tr class="<%= u.disqualified ? 'row-disq' : '' %> <%= u.role === 'admin' ? 'row-admin' : '' %>">
-        <td><%= u.display_name %> <% if (u.disqualified) { %><span class="disq-tag">🔒 gesperrt</span><% } %></td>
+        <td><%= u.display_name %> <% if (u.disqualified) { %><span class="disq-tag">🔒 gesperrt</span><% } %> <% if (u.auto_tip_count > 0) { %><span class="auto-tip-tag" title="Spätanmelder — <%= u.auto_tip_count %> Tipps automatisch zugelost">🎲 <%= u.auto_tip_count %></span><% } %></td>
         <td><code><%= u.username %></code></td>
         <td><span class="role-badge role-<%= u.role %>"><%= u.role %></span></td>
         <td>
