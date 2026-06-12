@@ -18,8 +18,40 @@ const { calcPoints } = require('../src/scoring');
 const { getMatchdayForDate } = require('../src/matchdays');
 const GAMES = require('../src/games-data');
 
-const TEST_USERS = 5;
+const TEST_USERS = 12;
 const TEST_PW = 'test123';
+
+// Hilfsfunktion: realistischen Tipp für ein Spiel erzeugen.
+// Für beendete Spiele korreliert der Tipp wie im echten Leben mit dem Ergebnis
+// (ca. 55% treffen die Tendenz, davon ein Teil sogar das exakte Ergebnis),
+// damit der Quell-Pool tatsächlich richtige Tipps enthält — sonst kann ein
+// Spätanmelder beim Test nie punkten. Für offene Spiele rein zufällig.
+function makeTip(game) {
+  const tendencies = ['H', 'D', 'A'];
+  if (game.finished) {
+    const actual = game.home_score > game.away_score ? 'H'
+      : game.home_score < game.away_score ? 'A' : 'D';
+    const roll = Math.random();
+    if (roll < 0.20) {
+      // exaktes Ergebnis getroffen
+      return { tip_tendency: actual, tip_home: game.home_score, tip_away: game.away_score };
+    } else if (roll < 0.55) {
+      // richtige Tendenz, aber anderes Ergebnis
+      return tendencyTip(actual);
+    } else {
+      // falsche Tendenz
+      const wrong = tendencies.filter(t => t !== actual);
+      return tendencyTip(wrong[Math.floor(Math.random() * wrong.length)]);
+    }
+  }
+  return tendencyTip(tendencies[Math.floor(Math.random() * 3)]);
+}
+
+function tendencyTip(tend) {
+  const th = tend === 'H' ? 1 + Math.floor(Math.random() * 2) : Math.floor(Math.random() * 2);
+  const ta = tend === 'A' ? th + 1 : tend === 'D' ? th : Math.max(0, th - 1 - Math.floor(Math.random() * 2));
+  return { tip_tendency: tend, tip_home: th, tip_away: ta };
+}
 
 async function main() {
   const existing = await get("SELECT id FROM users WHERE username = 'familie-test-1'");
@@ -60,7 +92,7 @@ async function main() {
 
   // Test-Familien mit Tipps auf alle Spiele + 1 Powerspiel pro Spieltag
   const hash = await bcrypt.hash(TEST_PW, 10);
-  const tendencies = ['H', 'D', 'A'];
+  const championTeams = ['Deutschland', 'Brasilien', 'Frankreich', 'Spanien', 'Argentinien', 'England', 'Portugal', 'Niederlande'];
   for (let u = 1; u <= TEST_USERS; u++) {
     const r = await run(
       "INSERT INTO users (display_name, username, password_hash, role, onboarded) VALUES (?,?,?,'schulfamilie',1)",
@@ -82,11 +114,9 @@ async function main() {
     }
 
     for (const g of games) {
-      const tend = tendencies[Math.floor(Math.random() * 3)];
-      const th = tend === 'H' ? 1 + Math.floor(Math.random() * 2) : Math.floor(Math.random() * 2);
-      const ta = tend === 'A' ? th + 1 : tend === 'D' ? th : Math.max(0, th - 1 - Math.floor(Math.random() * 2));
+      const tip = makeTip(g);
       const isPp = powerplayGames.has(g.id) ? 1 : 0;
-      const tip = { tip_tendency: tend, tip_home: th, tip_away: ta, is_powerplay: isPp };
+      tip.is_powerplay = isPp;
       let points = null, powerBonus = 0;
       if (g.finished) {
         const b = calcPoints(tip, g);
@@ -94,16 +124,16 @@ async function main() {
       }
       await run(
         'INSERT INTO tips (user_id, game_id, tip_tendency, tip_home, tip_away, is_powerplay, points, power_bonus) VALUES (?,?,?,?,?,?,?,?)',
-        [userId, g.id, tend, th, ta, isPp, points, powerBonus]
+        [userId, g.id, tip.tip_tendency, tip.tip_home, tip.tip_away, isPp, points, powerBonus]
       );
     }
-    await run('INSERT INTO champion_tips (user_id, team) VALUES (?,?)', [userId, ['Deutschland', 'Brasilien', 'Frankreich', 'Spanien', 'Argentinien'][u - 1]]);
+    await run('INSERT INTO champion_tips (user_id, team) VALUES (?,?)', [userId, championTeams[(u - 1) % championTeams.length]]);
     console.log(`Testfamilie ${u} angelegt (familie-test-${u} / ${TEST_PW})`);
   }
 
   console.log('\nFertig! So testest du jetzt:');
   console.log('  1. node server.js');
-  console.log('  2. http://localhost:3000 öffnen — Login-Seite zeigt das 🎲 Spätstarter-Ribbon');
+  console.log('  2. http://localhost:3000 öffnen — Login-Seite zeigt den 🎲 Spätstarter-Streifen');
   console.log('  3. Neue Familie registrieren → sie bekommt die Auto-Tipps zugelost');
   console.log('  4. Einloggen und vergangene Spiele ansehen: 🎲 Auto-Tipp-Badges + Punkte');
   console.log('  5. Vergleich: als familie-test-1 (test123) einloggen — die hat echte Tipps');
