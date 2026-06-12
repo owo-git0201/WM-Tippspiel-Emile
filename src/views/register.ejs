@@ -8,10 +8,12 @@
     <h1 class="auth-title">Jetzt mitmachen!</h1>
     <p class="auth-sub">Registriere dich einmalig — deine ganze Familie tippt unter einem Konto.</p>
 
+    <% const registrationClosed = typeof closed !== 'undefined' && closed; %>
     <% if (error) { %>
     <div class="alert alert-error"><%= error %></div>
     <% } %>
 
+    <% if (!registrationClosed) { %>
     <form method="POST" action="/auth/register" class="auth-form">
       <div class="field">
         <label>Anzeigename <span class="required">*</span></label>
@@ -90,6 +92,7 @@
             <li>✅ Faire Teilnahme — kein Austausch von Zugangsdaten</li>
             <li>✅ Die Schule behält sich vor, Konten bei Regelverstößen zu sperren</li>
           </ul>
+          <p style="margin-top:10px;"><strong>Spätanmelder:</strong> Du steigst erst jetzt ein? Kein Problem — für bereits gespielte Partien bekommst du automatisch den Tipp eines zufällig gezogenen Mitspielers zugelost (als 🎲 Auto-Tipp gekennzeichnet). So startest du fair mit der gleichen Punktechance wie der Durchschnitt aller Tipper. Anmeldung ist bis zum Ende der Gruppenphase möglich.</p>
           <p style="margin-top:10px;"><strong>Spielauswahl:</strong> Wir tippen nur Spiele mit bekannten Fußballnationen — also Europa, die großen Südamerikaner, USA/Mexiko/Kanada sowie attraktive Vertreter aus Afrika und Asien. Exoten ohne Wiedererkennungswert (z.B. Curaçao, Katar, Haiti) sind nicht dabei. Das reduziert die Spielanzahl auf ein überschaubares Maß.</p>
           <p><strong>Datenschutz:</strong> Es werden ausschließlich Anzeigename, Benutzername und Passwort gespeichert — keine E-Mail-Adresse, keine weiteren personenbezogenen Daten. Alle Daten bleiben schulintern und werden nach Abschluss des Turniers gelöscht.</p>
           <p>Der gewählte <strong>Anzeigename</strong> ist für alle angemeldeten Teilnehmenden in der Rangliste sichtbar.</p>
@@ -108,6 +111,7 @@
 
       <button type="submit" class="btn btn-primary btn-full">Registrieren & mitmachen</button>
     </form>
+    <% } %>
     <p class="auth-switch">Schon registriert? <a href="/auth/login">Anmelden</a></p>
   </div>
 </div>

@@ -123,6 +123,7 @@ main { flex: 1; }
 .powerplay-tag { background: var(--gold3); color: #92400E; font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
 .finished-tag { background: var(--green3); color: var(--green); font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
 .live-tag { background: var(--orange3); color: var(--orange); font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
+.auto-tip-tag { background: var(--bg); color: var(--text2); border: 1px dashed var(--border); font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; cursor: help; }
 
 .game-matchup { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .team { display: flex; align-items: center; gap: 8px; flex: 1; }

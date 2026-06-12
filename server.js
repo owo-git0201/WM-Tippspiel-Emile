@@ -5,13 +5,10 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
-const { getMatchdayBounds } = require('./src/matchdays');
+const { getMatchdayBounds, CHAMPION_DEADLINE } = require('./src/matchdays');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// WM-Sieger Deadline: nach Matchday 1 (alle Teams haben 1 Spiel gespielt) ~19. Juni 2026
-const CHAMPION_DEADLINE = new Date('2026-06-19T00:00:00');
 
 // Patenländer — nur Spiele mit mind. einem dieser Teams werden angezeigt
 const PATENLAENDER = new Set([
@@ -82,7 +79,7 @@ app.get('/', async (req, res) => {
 
   const allGames = await all(`
     SELECT g.*,
-      t.tip_tendency, t.tip_home, t.tip_away, t.is_powerplay, t.points, t.power_bonus
+      t.tip_tendency, t.tip_home, t.tip_away, t.is_powerplay, t.points, t.power_bonus, t.is_auto
     FROM games g
     LEFT JOIN tips t ON t.game_id = g.id AND t.user_id = ?
     ORDER BY g.kickoff ASC

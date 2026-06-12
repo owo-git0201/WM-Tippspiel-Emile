@@ -26,7 +26,8 @@ function randomTempPw() {
 router.get('/', requireAdmin, async (req, res) => {
   const games = await all('SELECT * FROM games ORDER BY kickoff');
   const users = await all(`
-    SELECT u.*, c1.name as class1_name, c2.name as class2_name
+    SELECT u.*, c1.name as class1_name, c2.name as class2_name,
+      (SELECT COUNT(*) FROM tips t WHERE t.user_id = u.id AND t.is_auto = 1) as auto_tip_count
     FROM users u
     LEFT JOIN classes c1 ON u.class1_id = c1.id
     LEFT JOIN classes c2 ON u.class2_id = c2.id
