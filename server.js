@@ -5,7 +5,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
-const { getMatchdayBounds, CHAMPION_DEADLINE } = require('./src/matchdays');
+const { getMatchdayBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE } = require('./src/matchdays');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -168,7 +168,8 @@ app.get('/', async (req, res) => {
     tippedCount, totalGames, nextGame,
     powerplayUsed: powerplayUsed ? powerplayUsed.game_id : null,
     championTip, championOpen, allTeams,
-    todayStr, nextDate, visiblePowerplays
+    todayStr, nextDate, visiblePowerplays,
+    lateJoinOpen: new Date() < REGISTRATION_DEADLINE
   });
 });
 

@@ -7,9 +7,13 @@ const router = express.Router();
 
 const REGISTRATION_CLOSED_MSG = 'Leider zu spät — die Anmeldung war nur bis zum Ende der Gruppenphase möglich. Aber gute Nachricht: Die EM ist schon wieder in zwei Jahren! ⚽';
 
+function lateOpen() {
+  return new Date() < REGISTRATION_DEADLINE;
+}
+
 router.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/');
-  res.render('login', { error: null, query: req.query });
+  res.render('login', { error: null, query: req.query, lateOpen: lateOpen() });
 });
 
 router.post('/login', async (req, res) => {
@@ -17,7 +21,7 @@ router.post('/login', async (req, res) => {
   try {
     const user = await get('SELECT * FROM users WHERE username = ?', [username.trim().toLowerCase()]);
     if (!user || !await bcrypt.compare(password, user.password_hash)) {
-      return res.render('login', { error: 'Benutzername oder Passwort falsch.', query: req.query });
+      return res.render('login', { error: 'Benutzername oder Passwort falsch.', query: req.query, lateOpen: lateOpen() });
     }
     req.session.user = { id: user.id, display_name: user.display_name, role: user.role, username: user.username };
 
@@ -25,7 +29,7 @@ router.post('/login', async (req, res) => {
     if (!user.onboarded) return res.redirect('/onboarding');
     res.redirect('/');
   } catch (e) {
-    res.render('login', { error: 'Fehler beim Login.', query: req.query });
+    res.render('login', { error: 'Fehler beim Login.', query: req.query, lateOpen: lateOpen() });
   }
 });
 
