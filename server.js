@@ -5,7 +5,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
-const { getMatchdayBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE } = require('./src/matchdays');
+const { getWeekBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE } = require('./src/matchdays');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -90,8 +90,8 @@ app.get('/', async (req, res) => {
     PATENLAENDER.has(g.home_team) || PATENLAENDER.has(g.away_team)
   );
 
-  // Powerspiel diesen Spieltag bereits gesetzt? (identisch zur Logik in tips.js)
-  const { start: mdStart, end: mdEnd } = getMatchdayBounds(new Date());
+  // Powerspiel diese Woche bereits gesetzt? (identisch zur Logik in tips.js)
+  const { start: mdStart, end: mdEnd } = getWeekBounds(new Date());
   const powerplayUsed = mdStart ? await get(
     `SELECT t.id, g.id as game_id FROM tips t JOIN games g ON t.game_id = g.id
      WHERE t.user_id = ? AND t.is_powerplay = 1
