@@ -125,6 +125,11 @@ main { flex: 1; }
 .live-tag { background: var(--orange3); color: var(--orange); font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; }
 .auto-tip-tag { background: var(--bg); color: var(--text2); border: 1px dashed var(--border); font-size: .65rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; cursor: help; }
 
+/* RANKING-HINWEIS (Powerspiel-Korrektur) — nur Gesamtranking */
+.rank-notice { position: relative; background: var(--gold3); border: 1px solid rgba(245,158,11,.45); color: #92400E; border-radius: 10px; padding: 12px 38px 12px 14px; font-size: .82rem; line-height: 1.55; margin-bottom: 16px; }
+.rank-notice-close { position: absolute; top: 6px; right: 8px; background: none; border: none; font-size: 1.2rem; line-height: 1; color: #92400E; cursor: pointer; opacity: .6; padding: 4px; }
+.rank-notice-close:hover { opacity: 1; }
+
 .game-matchup { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .team { display: flex; align-items: center; gap: 8px; flex: 1; }
 .team-away { flex-direction: row-reverse; text-align: right; }
