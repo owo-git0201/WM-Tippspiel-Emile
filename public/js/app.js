@@ -114,6 +114,18 @@ document.querySelectorAll('.view-tabs .tab-btn').forEach(btn => {
   });
 });
 
+// Ranking-Hinweis (Powerspiel) — einmal schließbar pro Nutzer, merkt sich via localStorage
+const rankNotice = document.getElementById('rank-notice');
+if (rankNotice) {
+  if (localStorage.getItem('rankNoticeDismissed_pp1') === '1') {
+    rankNotice.style.display = 'none';
+  }
+  document.getElementById('rank-notice-close')?.addEventListener('click', () => {
+    rankNotice.style.display = 'none';
+    localStorage.setItem('rankNoticeDismissed_pp1', '1');
+  });
+}
+
 // Ranking Tabs
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
