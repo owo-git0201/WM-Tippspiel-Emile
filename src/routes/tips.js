@@ -1,7 +1,7 @@
 const express = require('express');
 const { run, get, all } = require('../db');
 const { calcPoints } = require('../scoring');
-const { getWeekBounds } = require('../matchdays');
+const { getMatchdayBounds } = require('../matchdays');
 const router = express.Router();
 
 function requireLogin(req, res, next) {
@@ -24,9 +24,9 @@ router.post('/save', requireLogin, async (req, res) => {
     return res.json({ ok: false, error: `Deadline abgelaufen — Anpfiff war vor ${diff} Minute${diff !== 1 ? 'n' : ''}.` });
   }
 
-  // Powerspiel-Check: max 1 pro Kalenderwoche
+  // Powerspiel-Check: max 1 pro Matchday
   if (is_powerplay === '1' || is_powerplay === true) {
-    const { start, end } = getWeekBounds(kickoff);
+    const { start, end } = getMatchdayBounds(kickoff);
     if (start && end) {
       const existingPowerplay = await get(
         `SELECT t.id FROM tips t JOIN games g ON t.game_id = g.id
@@ -35,7 +35,7 @@ router.post('/save', requireLogin, async (req, res) => {
         [userId, start, end, game_id]
       );
       if (existingPowerplay) {
-        return res.json({ ok: false, error: 'Du hast in dieser Woche bereits ein Powerspiel gewählt.' });
+        return res.json({ ok: false, error: 'Du hast in diesem Spieltag bereits ein Powerspiel gewählt.' });
       }
     }
   }

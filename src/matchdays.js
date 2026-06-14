@@ -30,26 +30,9 @@ function getMatchdayBounds(date) {
   return { start: md.start, end: md.end, label: md.label };
 }
 
-// Kalenderwoche (Mo–So) für die Powerspiel-Regel: 1 Powerspiel pro Woche.
-// Akzeptiert ein Date oder einen kickoff-String 'YYYY-MM-DD HH:MM'. Bucketing
-// über den Datumsteil in UTC (unabhängig von der Server-Zeitzone). Gibt Montag
-// 00:00 und den darauffolgenden Montag als schlichte 'YYYY-MM-DD'-Strings zurück
-// — in SQL immer mit datetime() vergleichen (kickoff hat Leerzeichen statt 'T').
-function getWeekBounds(date) {
-  const datePart = (date instanceof Date) ? date.toISOString().slice(0, 10) : String(date).slice(0, 10);
-  const d = new Date(datePart + 'T00:00:00Z');
-  const day = d.getUTCDay();                 // 0=So .. 6=Sa
-  const back = (day === 0 ? 6 : day - 1);    // Tage zurück bis Montag
-  const monday = new Date(d);
-  monday.setUTCDate(d.getUTCDate() - back);
-  const nextMonday = new Date(monday);
-  nextMonday.setUTCDate(monday.getUTCDate() + 7);
-  return { start: monday.toISOString().slice(0, 10), end: nextMonday.toISOString().slice(0, 10) };
-}
-
 // WM-Sieger Deadline: nach Matchday 2 ist der Wissensvorsprung zu hoch
 const CHAMPION_DEADLINE = new Date('2026-06-19T00:00:00');
 // Spätanmeldung nur bis Ende der Gruppenphase
 const REGISTRATION_DEADLINE = new Date('2026-06-26T00:00:00');
 
-module.exports = { MATCHDAYS, getMatchdayForDate, getMatchdayBounds, getWeekBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE };
+module.exports = { MATCHDAYS, getMatchdayForDate, getMatchdayBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE };

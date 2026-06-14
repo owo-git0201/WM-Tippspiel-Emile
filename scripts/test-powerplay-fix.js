@@ -94,6 +94,6 @@ async function powerplayAllowed(userId, gameId, kickoff) {
   check(kept.points === 6, `Behaltenes PP: Tendenz 2 × Powerspiel 3 = 6 Pkt (ist ${kept.points})`);
 
   console.log(fails === 0 ? '\n✅ Alle Prüfungen bestanden.' : `\n❌ ${fails} Prüfung(en) fehlgeschlagen.`);
-  try { fs.unlinkSync(TEST_DB); } catch {}
+  fs.unlinkSync(TEST_DB);
   process.exit(fails === 0 ? 0 : 1);
 })().catch(e => { console.error(e); try { fs.unlinkSync(TEST_DB); } catch {} process.exit(1); });
