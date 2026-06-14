@@ -38,6 +38,7 @@ db.serialize(() => {
   db.run(`ALTER TABLE tips ADD COLUMN is_auto INTEGER DEFAULT 0`, () => {});
   db.run(`ALTER TABLE tips ADD COLUMN source_user_id INTEGER DEFAULT NULL`, () => {});
   db.run(`ALTER TABLE champion_tips ADD COLUMN is_auto INTEGER DEFAULT 0`, () => {});
+  db.run(`ALTER TABLE games ADD COLUMN matchday INTEGER DEFAULT NULL`, () => {});
 
   db.run(`CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,7 +51,8 @@ db.serialize(() => {
     group_name TEXT DEFAULT '',
     home_score INTEGER DEFAULT NULL,
     away_score INTEGER DEFAULT NULL,
-    finished INTEGER DEFAULT 0
+    finished INTEGER DEFAULT 0,
+    matchday INTEGER DEFAULT NULL
   )`);
 
   db.run(`CREATE TABLE IF NOT EXISTS tips (

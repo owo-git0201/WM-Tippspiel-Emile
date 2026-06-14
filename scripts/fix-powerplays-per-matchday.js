@@ -1,59 +1,58 @@
-// Bereinigt doppelte Powerspiele pro Spieltag (Folge des kickoff-Vergleichs-Bugs).
+// Setzt die Regel "1 Powerspiel pro ECHTEM Spieltag (matchday 1/2/3)" durch.
+// Ein Spieltag = die Runde, in der alle Teams einer Gruppe einmal gespielt haben
+// (NICHT ein Kalender-Datumsfenster). Wo ein User in derselben Spieltag-Runde
+// mehrere Powerspiele hat, bleibt das ZUERST gesetzte (kleinstes created_at,
+// dann kleinste id) aktiv; die übrigen werden zurückgestuft und ihre Punkte
+// neu berechnet (⚡-Bonus entfällt).
 //
-// Regel: Pro User und Spieltag darf nur EIN Powerspiel aktiv sein. Wo mehrere
-// existieren, bleibt das ZUERST gesetzte (kleinste created_at, bei Gleichstand
-// kleinste tip-id) aktiv — das entspricht exakt dem, was die App bei korrekter
-// Prüfung erlaubt hätte (das erste zählt, weitere wären abgelehnt worden).
-// Für die zurückgestuften Tipps werden die Punkte neu berechnet (Powerbonus weg).
-//
-// Default: DRY-RUN (zeigt nur an). Mit Argument "--apply" werden Änderungen geschrieben.
-//   node scripts/fix-duplicate-powerplays.js            # nur anzeigen
-//   node scripts/fix-duplicate-powerplays.js --apply     # anwenden
+// Default: DRY-RUN. Mit "--apply" werden Änderungen geschrieben.
+//   node scripts/fix-powerplays-per-matchday.js            # nur anzeigen
+//   node scripts/fix-powerplays-per-matchday.js --apply     # anwenden
 
 const { all, get, run } = require('../src/db');
 const { calcPoints } = require('../src/scoring');
-const { getMatchdayForDate } = require('../src/matchdays');
+const { assignMatchdays } = require('../src/assign-matchdays');
 
 const APPLY = process.argv.includes('--apply');
 
 (async () => {
-  // Alle aktiven Powerspiele mit User + Spiel laden
+  // Sicherstellen, dass jedes Gruppenspiel seine echte Spieltag-Nummer hat
+  await assignMatchdays();
+
   const pps = await all(
     `SELECT t.id as tip_id, t.user_id, t.game_id, t.created_at, t.points, t.power_bonus,
-            u.display_name, g.kickoff, g.home_team, g.away_team, g.finished, g.home_score, g.away_score, g.round
+            u.display_name, g.kickoff, g.home_team, g.away_team, g.group_name, g.matchday,
+            g.finished, g.home_score, g.away_score, g.round
      FROM tips t JOIN users u ON u.id = t.user_id JOIN games g ON g.id = t.game_id
      WHERE t.is_powerplay = 1
      ORDER BY t.user_id, t.created_at, t.id`
   );
 
-  // Nach (user_id, matchday) gruppieren
+  // Nach (user_id, echtem Spieltag) gruppieren
   const groups = new Map();
   for (const pp of pps) {
-    const md = getMatchdayForDate(pp.kickoff);
-    const mdId = md ? md.id : `nodate(${String(pp.kickoff).slice(0, 10)})`;
-    const key = `${pp.user_id}|${mdId}`;
-    if (!groups.has(key)) groups.set(key, { mdId, label: md ? md.label : 'außerhalb Spieltag', items: [] });
+    const md = pp.matchday ? `ST${pp.matchday}` : `kein-Spieltag(${String(pp.kickoff).slice(0, 10)})`;
+    const key = `${pp.user_id}|${md}`;
+    if (!groups.has(key)) groups.set(key, { md, items: [] });
     groups.get(key).items.push(pp);
   }
 
   const toDemote = [];
-  let affectedUsers = new Set();
-  for (const [key, grp] of groups) {
+  const affectedUsers = new Set();
+  for (const grp of groups.values()) {
     if (grp.items.length <= 1) continue;
     affectedUsers.add(grp.items[0].user_id);
-    // items sind bereits nach created_at, id sortiert → [0] bleibt, Rest wird zurückgestuft
     const keep = grp.items[0];
-    const demote = grp.items.slice(1);
-    console.log(`\n${keep.display_name} — ${grp.label}: ${grp.items.length} Powerspiele, behalte das erste:`);
-    console.log(`   BEHALTEN: ${keep.home_team} vs ${keep.away_team} (${keep.kickoff})`);
-    for (const d of demote) {
-      console.log(`   → ZURÜCKSTUFEN: ${d.home_team} vs ${d.away_team} (${d.kickoff}) | aktuell ${d.points} Pkt inkl. ⚡-Bonus ${d.power_bonus}`);
+    console.log(`\n${keep.display_name} — ${grp.md}: ${grp.items.length} Powerspiele, behalte das erste:`);
+    console.log(`   BEHALTEN: ${keep.home_team} vs ${keep.away_team} (Gr.${keep.group_name}, ${keep.kickoff})`);
+    for (const d of grp.items.slice(1)) {
+      console.log(`   → ZURÜCKSTUFEN: ${d.home_team} vs ${d.away_team} (Gr.${d.group_name}, ${d.kickoff}) | aktuell ${d.points} Pkt inkl. ⚡-Bonus ${d.power_bonus}`);
       toDemote.push(d);
     }
   }
 
   if (toDemote.length === 0) {
-    console.log('\n✅ Keine doppelten Powerspiele gefunden. Nichts zu tun.');
+    console.log('\n✅ Kein Spieltag mit mehr als einem Powerspiel gefunden. Nichts zu tun.');
     process.exit(0);
   }
 
@@ -64,7 +63,6 @@ const APPLY = process.argv.includes('--apply');
     process.exit(0);
   }
 
-  // Anwenden: is_powerplay=0 setzen und Punkte neu berechnen
   let changed = 0;
   for (const d of toDemote) {
     await run('UPDATE tips SET is_powerplay = 0 WHERE id = ?', [d.tip_id]);
