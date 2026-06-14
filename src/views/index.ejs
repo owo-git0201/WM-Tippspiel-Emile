@@ -29,11 +29,7 @@
         <div class="legend-item"><span class="badge badge-red">&times;2&ndash;4</span> KO</div>
         <p class="legend-sub">Tendenz richtig = <strong>2 Pkt</strong> &middot; Exaktes Ergebnis = <strong>4 Pkt</strong> &middot; Powerspiel = <strong>&times;3</strong></p>
       </div>
-      <% if (powerplayUsed) { %>
-      <div class="hero-powerplay-banner hero-powerplay-set">&#x26A1; Powerspiel diese Woche bereits gesetzt.</div>
-      <% } else { %>
-      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> W&auml;hle ein Spiel pro Woche &ndash; Punkte &times;3!</div>
-      <% } %>
+      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> 1 Spiel pro Spieltag w&auml;hlen &ndash; Punkte &times;3!</div>
     </div>
   </div>
 </div>
@@ -125,7 +121,7 @@
       <h2 class="group-title"><%= dayKey %></h2>
       <div class="games-grid">
         <% byDay[dayKey].forEach(game => { %>
-        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>
@@ -139,7 +135,7 @@
       <h2 class="group-title"><%= mdKey %></h2>
       <div class="games-grid">
         <% byMatchday[mdKey].forEach(game => { %>
-        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>
@@ -153,7 +149,7 @@
       <h2 class="group-title"><%= groupKey %></h2>
       <div class="games-grid">
         <% byGroup[groupKey].forEach(game => { %>
-        <%- include('partials/game-card', { game, powerplayUsed }) %>
+        <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>

@@ -4,8 +4,9 @@
   const isFinished = game.finished;
   const hasTip = game.tip_tendency;
   const canTip = !isPast && !isFinished;
-  const isMyPowerplay = powerplayUsed && powerplayUsed == game.id;
-  const weekPowerplayTaken = powerplayUsed && !isMyPowerplay;
+  const ppForMatchday = (typeof powerplaysByMatchday !== 'undefined' && game.matchday) ? powerplaysByMatchday[game.matchday] : null;
+  const isMyPowerplay = ppForMatchday && ppForMatchday == game.id;
+  const mdPowerplayTaken = ppForMatchday && !isMyPowerplay;
   const isAutoTip = hasTip && game.is_auto;
 %>
 <div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %> <%= hasTip ? 'game-tipped' : '' %>">
@@ -88,10 +89,10 @@
       </div>
     </div>
     <div class="tip-actions">
-      <label class="powerplay-toggle <%= weekPowerplayTaken ? 'disabled' : '' %>">
+      <label class="powerplay-toggle <%= mdPowerplayTaken ? 'disabled' : '' %>">
         <input type="checkbox" name="powerplay_<%= game.id %>"
           <%= isMyPowerplay ? 'checked' : '' %>
-          <%= weekPowerplayTaken ? 'disabled' : '' %>>
+          <%= mdPowerplayTaken ? 'disabled' : '' %>>
         <span>⚡ Powerspiel ×3</span>
       </label>
     </div>

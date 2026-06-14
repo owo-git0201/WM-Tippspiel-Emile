@@ -5,7 +5,8 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const { all, get, run } = require('./src/db');
 const GAMES = require('./src/games-data');
-const { getMatchdayBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE } = require('./src/matchdays');
+const { CHAMPION_DEADLINE, REGISTRATION_DEADLINE } = require('./src/matchdays');
+const { assignMatchdays } = require('./src/assign-matchdays');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -90,14 +91,16 @@ app.get('/', async (req, res) => {
     PATENLAENDER.has(g.home_team) || PATENLAENDER.has(g.away_team)
   );
 
-  // Powerspiel diesen Spieltag bereits gesetzt? (identisch zur Logik in tips.js)
-  const { start: mdStart, end: mdEnd } = getMatchdayBounds(new Date());
-  const powerplayUsed = mdStart ? await get(
-    `SELECT t.id, g.id as game_id FROM tips t JOIN games g ON t.game_id = g.id
-     WHERE t.user_id = ? AND t.is_powerplay = 1
-       AND datetime(g.kickoff) >= datetime(?) AND datetime(g.kickoff) < datetime(?)`,
-    [userId, mdStart, mdEnd]
-  ) : null;
+  // Pro echtem Spieltag (1/2/3) max. 1 Powerspiel. Map: Spieltag-Nr → game_id
+  // des bereits gesetzten Powerspiels. Damit deaktiviert die UI gezielt die
+  // anderen Powerspiel-Häkchen desselben Spieltags (nicht datumsbasiert!).
+  const ppRows = await all(
+    `SELECT g.matchday, t.game_id FROM tips t JOIN games g ON t.game_id = g.id
+     WHERE t.user_id = ? AND t.is_powerplay = 1 AND g.matchday IS NOT NULL`,
+    [userId]
+  );
+  const powerplaysByMatchday = {};
+  for (const r of ppRows) powerplaysByMatchday[r.matchday] = r.game_id;
 
   // Heute und nächste Spiele
   const todayStr = new Date().toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: '2-digit' });
@@ -167,7 +170,7 @@ app.get('/', async (req, res) => {
   res.render('index', {
     games, byDay, byGroup, byMatchday,
     tippedCount, totalGames, nextGame,
-    powerplayUsed: powerplayUsed ? powerplayUsed.game_id : null,
+    powerplaysByMatchday,
     championTip, championOpen, allTeams,
     todayStr, nextDate, visiblePowerplays,
     lateJoinOpen: new Date() < REGISTRATION_DEADLINE
@@ -261,6 +264,6 @@ async function seedAdmin() {
   console.log('Admin-Account angelegt (username: admin)');
 }
 
-seedGames().then(seedAdmin).then(() => {
+seedGames().then(seedAdmin).then(assignMatchdays).then(() => {
   app.listen(PORT, () => console.log(`EmiLe WM-Tippspiel läuft auf http://localhost:${PORT}`));
 });
