@@ -30,7 +30,8 @@ router.post('/save', requireLogin, async (req, res) => {
     if (start && end) {
       const existingPowerplay = await get(
         `SELECT t.id FROM tips t JOIN games g ON t.game_id = g.id
-         WHERE t.user_id = ? AND t.is_powerplay = 1 AND g.kickoff >= ? AND g.kickoff < ? AND t.game_id != ?`,
+         WHERE t.user_id = ? AND t.is_powerplay = 1
+           AND datetime(g.kickoff) >= datetime(?) AND datetime(g.kickoff) < datetime(?) AND t.game_id != ?`,
         [userId, start, end, game_id]
       );
       if (existingPowerplay) {

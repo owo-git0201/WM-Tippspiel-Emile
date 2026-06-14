@@ -94,7 +94,8 @@ app.get('/', async (req, res) => {
   const { start: mdStart, end: mdEnd } = getMatchdayBounds(new Date());
   const powerplayUsed = mdStart ? await get(
     `SELECT t.id, g.id as game_id FROM tips t JOIN games g ON t.game_id = g.id
-     WHERE t.user_id = ? AND t.is_powerplay = 1 AND g.kickoff >= ? AND g.kickoff < ?`,
+     WHERE t.user_id = ? AND t.is_powerplay = 1
+       AND datetime(g.kickoff) >= datetime(?) AND datetime(g.kickoff) < datetime(?)`,
     [userId, mdStart, mdEnd]
   ) : null;
 
@@ -146,8 +147,8 @@ app.get('/', async (req, res) => {
     `SELECT t.game_id, u.display_name FROM tips t
      JOIN users u ON t.user_id = u.id
      JOIN games g ON t.game_id = g.id
-     WHERE t.is_powerplay = 1 AND g.kickoff <= ? AND u.disqualified = 0`,
-    [new Date().toISOString()]
+     WHERE t.is_powerplay = 1 AND datetime(g.kickoff) <= datetime('now') AND u.disqualified = 0`,
+    []
   );
 
   // Gamification: Fortschritt + nächstes Spiel

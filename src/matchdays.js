@@ -18,10 +18,16 @@ function getMatchdayForDate(date) {
   return null;
 }
 
+// Gibt die Spieltags-Grenzen als schlichte 'YYYY-MM-DD'-Strings zurück.
+// WICHTIG: NICHT als ISO (toISOString) — games.kickoff ist als
+// 'YYYY-MM-DD HH:MM' gespeichert (Leerzeichen, kein 'T'/'Z'). Beim Vergleich
+// in SQL müssen beide Seiten in datetime() gewrappt werden, sonst vergleicht
+// SQLite lexikalisch und das Leerzeichen (0x20) < 'T' (0x54) verfälscht die
+// Spieltags-Zuordnung an Grenztagen (führte zu doppelten Powerspielen).
 function getMatchdayBounds(date) {
   const md = getMatchdayForDate(date);
   if (!md) return { start: null, end: null };
-  return { start: new Date(md.start).toISOString(), end: new Date(md.end).toISOString(), label: md.label };
+  return { start: md.start, end: md.end, label: md.label };
 }
 
 // WM-Sieger Deadline: nach Matchday 2 ist der Wissensvorsprung zu hoch
