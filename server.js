@@ -1,3 +1,10 @@
+// Zeitzone fest auf Deutschland setzen — MUSS vor jeder Date-Nutzung stehen.
+// Die kickoff-Zeiten in games-data.js sind in MESZ angegeben; der Server läuft
+// aber auf UTC. Ohne diese Zeile liest Node '2026-06-11 21:00' als 21:00 UTC
+// statt 21:00 MESZ → Deadline & Countdown lägen 2 Stunden daneben (man könnte
+// ins laufende Spiel tippen). Mit Europe/Berlin stimmt Anpfiff = Tipp-Deadline.
+process.env.TZ = 'Europe/Berlin';
+
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
