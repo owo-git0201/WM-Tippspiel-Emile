@@ -53,7 +53,7 @@ const GAMES = [
 
   // === GRUPPE G: Belgien · Ägypten · Iran · Neuseeland ===
   { home: 'Belgien',    away: 'Ägypten',   home_flag: '🇧🇪', away_flag: '🇪🇬', kickoff: '2026-06-15 21:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Iran',       away: 'Neuseeland', home_flag: '🇮🇷', away_flag: '🇳🇿', kickoff: '2026-06-15 00:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Iran',       away: 'Neuseeland', home_flag: '🇮🇷', away_flag: '🇳🇿', kickoff: '2026-06-16 00:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Belgien',    away: 'Iran',       home_flag: '🇧🇪', away_flag: '🇮🇷', kickoff: '2026-06-21 21:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Neuseeland', away: 'Ägypten',   home_flag: '🇳🇿', away_flag: '🇪🇬', kickoff: '2026-06-22 03:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Neuseeland', away: 'Belgien',   home_flag: '🇳🇿', away_flag: '🇧🇪', kickoff: '2026-06-27 05:00', round: 'Gruppenphase', group: 'G' },
@@ -61,7 +61,7 @@ const GAMES = [
 
   // === GRUPPE H: Spanien · Kapverdische Inseln · Saudi-Arabien · Uruguay ===
   { home: 'Spanien',              away: 'Kapverdische Inseln', home_flag: '🇪🇸', away_flag: '🇨🇻', kickoff: '2026-06-15 18:00', round: 'Gruppenphase', group: 'H' },
-  { home: 'Saudi-Arabien',        away: 'Uruguay',            home_flag: '🇸🇦', away_flag: '🇺🇾', kickoff: '2026-06-15 00:00', round: 'Gruppenphase', group: 'H' },
+  { home: 'Saudi-Arabien',        away: 'Uruguay',            home_flag: '🇸🇦', away_flag: '🇺🇾', kickoff: '2026-06-16 00:00', round: 'Gruppenphase', group: 'H' },
   { home: 'Spanien',              away: 'Saudi-Arabien',       home_flag: '🇪🇸', away_flag: '🇸🇦', kickoff: '2026-06-21 18:00', round: 'Gruppenphase', group: 'H' },
   { home: 'Uruguay',              away: 'Kapverdische Inseln', home_flag: '🇺🇾', away_flag: '🇨🇻', kickoff: '2026-06-22 00:00', round: 'Gruppenphase', group: 'H' },
   { home: 'Kapverdische Inseln',  away: 'Saudi-Arabien',       home_flag: '🇨🇻', away_flag: '🇸🇦', kickoff: '2026-06-27 02:00', round: 'Gruppenphase', group: 'H' },
@@ -69,7 +69,7 @@ const GAMES = [
 
   // === GRUPPE I: Frankreich · Senegal · Irak · Norwegen ===
   { home: 'Frankreich', away: 'Senegal',   home_flag: '🇫🇷', away_flag: '🇸🇳', kickoff: '2026-06-16 21:00', round: 'Gruppenphase', group: 'I' },
-  { home: 'Irak',       away: 'Norwegen',  home_flag: '🇮🇶', away_flag: '🇳🇴', kickoff: '2026-06-16 00:00', round: 'Gruppenphase', group: 'I' },
+  { home: 'Irak',       away: 'Norwegen',  home_flag: '🇮🇶', away_flag: '🇳🇴', kickoff: '2026-06-17 00:00', round: 'Gruppenphase', group: 'I' },
   { home: 'Frankreich', away: 'Irak',      home_flag: '🇫🇷', away_flag: '🇮🇶', kickoff: '2026-06-22 23:00', round: 'Gruppenphase', group: 'I' },
   { home: 'Norwegen',   away: 'Senegal',   home_flag: '🇳🇴', away_flag: '🇸🇳', kickoff: '2026-06-23 02:00', round: 'Gruppenphase', group: 'I' },
   { home: 'Norwegen',   away: 'Frankreich', home_flag: '🇳🇴', away_flag: '🇫🇷', kickoff: '2026-06-26 21:00', round: 'Gruppenphase', group: 'I' },
