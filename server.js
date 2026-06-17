@@ -198,6 +198,35 @@ app.post('/champion', async (req, res) => {
   res.redirect('/');
 });
 
+// Öffentliche Rangliste — kein Login erforderlich
+app.get('/public', async (req, res) => {
+  const overall = await all(`
+    SELECT u.id, u.display_name, u.role, u.disqualified,
+      COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) as total_points,
+      COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0) as power_points,
+      COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id), 0) as champion_points
+    FROM users u
+    LEFT JOIN tips t ON t.user_id = u.id
+    WHERE u.role != 'admin'
+    GROUP BY u.id
+    ORDER BY (CASE WHEN u.disqualified=1 THEN -1 ELSE
+      COALESCE(SUM(t.points),0) + COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id),0)
+    END) DESC,
+    (COALESCE(SUM(t.points),0) - COALESCE(SUM(t.power_bonus),0)) DESC
+  `);
+  overall.forEach(u => {
+    u.grand_total = u.disqualified ? 0 : (u.total_points + u.champion_points);
+    u.tip_only_points = u.disqualified ? 0 : (u.total_points - u.power_points);
+  });
+  const active = overall.filter(u => !u.disqualified);
+  active.forEach((u, i) => {
+    const prev = active[i - 1];
+    u.rank = (i === 0 || u.grand_total !== prev.grand_total || u.tip_only_points !== prev.tip_only_points)
+      ? i + 1 : prev.rank;
+  });
+  res.render('public-ranking', { overall });
+});
+
 // Rangliste mit Punkte-Aufschlüsselung
 app.get('/ranking', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
