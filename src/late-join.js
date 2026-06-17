@@ -1,6 +1,5 @@
 const { run, get, all } = require('./db');
 const { calcPoints } = require('./scoring');
-const { MATCHDAYS, getMatchdayForDate } = require('./matchdays');
 
 // Spätanmelder-Logik:
 // Für jedes bereits angepfiffene Spiel erbt der neue Spieler den Tipp eines
@@ -36,25 +35,29 @@ async function assignAutoTips(userId, now = new Date()) {
     if (tip) drawn.push({ game, tip, isPowerplay: !!tip.is_powerplay });
   }
 
-  // 2) Powerspiel-Regel pro Spieltag anwenden
+  // 2) Powerspiel-Regel pro Spieltag anwenden (gruppiert nach game.matchday,
+  //    identisch zur Enforcement-Logik in tips.js — keine Kalender-Fenster)
   const byMatchday = new Map();
   for (const entry of drawn) {
-    const md = getMatchdayForDate(entry.game.kickoff);
-    const key = md ? md.id : 0;
+    const key = entry.game.matchday != null ? entry.game.matchday : 0;
     if (!byMatchday.has(key)) byMatchday.set(key, []);
     byMatchday.get(key).push(entry);
   }
-  for (const [mdId, entries] of byMatchday) {
-    const md = MATCHDAYS.find(m => m.id === mdId);
+  for (const [mdKey, entries] of byMatchday) {
     const inherited = entries.filter(e => e.isPowerplay);
     if (inherited.length > 1) {
+      // Mehr als ein geerbtes PP auf demselben Spieltag → nur eines behalten
       const keep = inherited[Math.floor(Math.random() * inherited.length)];
       for (const e of inherited) {
         if (e !== keep) e.isPowerplay = false;
       }
-    } else if (inherited.length === 0 && md && entries.length > 0 && new Date(md.end) <= now) {
-      const pick = entries[Math.floor(Math.random() * entries.length)];
-      pick.isPowerplay = true;
+    } else if (inherited.length === 0 && mdKey > 0 && entries.length > 0) {
+      // Kein PP geerbt: nur zuteilen wenn der gesamte Spieltag bereits vorbei ist
+      const allPast = entries.every(e => new Date(e.game.kickoff) <= now);
+      if (allPast) {
+        const pick = entries[Math.floor(Math.random() * entries.length)];
+        pick.isPowerplay = true;
+      }
     }
   }
 
