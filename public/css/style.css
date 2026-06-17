@@ -250,6 +250,8 @@ main { flex: 1; }
 .participant-me { background: var(--green); color: #fff; border-color: var(--green); }
 .ranking-table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
 .ranking-table th { background: var(--green); color: #fff; font-size: .72rem; font-weight: 700; padding: 10px 14px; text-align: left; }
+.rank-tiebreak-hint td { background: rgba(255,255,255,.1); color: rgba(255,255,255,.82); font-size: .7rem; font-style: italic; padding: 5px 14px; border-bottom: none; }
+.rank-tiebreak-hint:hover td { background: rgba(255,255,255,.1) !important; }
 .ranking-table td { padding: 12px 14px; font-size: .83rem; border-bottom: 1px solid var(--border); }
 .ranking-table tr:last-child td { border-bottom: none; }
 .ranking-table tr:hover td { background: var(--green3); }
