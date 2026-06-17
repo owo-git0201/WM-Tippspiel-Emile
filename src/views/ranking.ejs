@@ -44,7 +44,7 @@
         <% overall.forEach((u, i) => { %>
         <tr class="<%= u.id === user.id ? 'row-me' : '' %> <%= u.disqualified ? 'row-disq' : '' %>">
           <td class="rank-num">
-            <% if (u.disqualified) { %>🚫<% } else if (i === 0) { %>🥇<% } else if (i === 1) { %>🥈<% } else if (i === 2) { %>🥉<% } else { %><%= i+1 %><% } %>
+            <% if (u.disqualified) { %>🚫<% } else if (u.rank === 1) { %>🥇<% } else if (u.rank === 2) { %>🥈<% } else if (u.rank === 3) { %>🥉<% } else { %><%= u.rank %><% } %>
           </td>
           <td class="rank-name">
             <%= u.display_name %>

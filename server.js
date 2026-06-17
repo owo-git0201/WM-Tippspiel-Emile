@@ -208,7 +208,8 @@ app.get('/ranking', async (req, res) => {
       COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) as total_points,
       COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0) as power_points,
       COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id), 0) as champion_points,
-      COUNT(CASE WHEN t.points IS NOT NULL THEN 1 END) as tipped_finished
+      COUNT(CASE WHEN t.points IS NOT NULL THEN 1 END) as tipped_finished,
+      COUNT(CASE WHEN t.points IS NOT NULL AND (t.points - COALESCE(t.power_bonus,0)) > 0 THEN 1 END) as correct_tips
     FROM users u
     LEFT JOIN tips t ON t.user_id = u.id
     LEFT JOIN classes c1 ON u.class1_id = c1.id
@@ -217,13 +218,21 @@ app.get('/ranking', async (req, res) => {
     GROUP BY u.id
     ORDER BY (CASE WHEN u.disqualified=1 THEN -1 ELSE
       COALESCE(SUM(t.points),0) + COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id),0)
-    END) DESC
+    END) DESC,
+    COUNT(CASE WHEN t.points IS NOT NULL AND (t.points - COALESCE(t.power_bonus,0)) > 0 THEN 1 END) DESC
   `);
 
-  // Berechnete Gesamtpunkte
+  // Berechnete Gesamtpunkte + Rang mit Tiebreaker
   overall.forEach(u => {
     u.grand_total = u.disqualified ? 0 : (u.total_points + u.champion_points);
     u.tip_only_points = u.disqualified ? 0 : (u.total_points - u.power_points);
+  });
+  const active = overall.filter(u => !u.disqualified);
+  active.forEach((u, i) => {
+    const prev = active[i - 1];
+    u.rank = (i === 0 || u.grand_total !== prev.grand_total || u.correct_tips !== prev.correct_tips)
+      ? i + 1
+      : prev.rank;
   });
 
   const classes = await all('SELECT * FROM classes ORDER BY name');
