@@ -22,7 +22,7 @@ const GAMES = [
   // === GRUPPE C: Brasilien · Marokko · Haiti · Schottland ===
   { home: 'Brasilien',  away: 'Marokko',   home_flag: '🇧🇷', away_flag: '🇲🇦', kickoff: '2026-06-13 00:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Haiti',      away: 'Schottland', home_flag: '🇭🇹', away_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', kickoff: '2026-06-14 03:00', round: 'Gruppenphase', group: 'C' },
-  { home: 'Schottland', away: 'Marokko',   home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇲🇦', kickoff: '2026-06-19 00:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Schottland', away: 'Marokko',   home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇲🇦', kickoff: '2026-06-20 00:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Brasilien',  away: 'Haiti',     home_flag: '🇧🇷', away_flag: '🇭🇹', kickoff: '2026-06-20 02:30', round: 'Gruppenphase', group: 'C' },
   { home: 'Marokko',    away: 'Haiti',     home_flag: '🇲🇦', away_flag: '🇭🇹', kickoff: '2026-06-24 00:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Schottland', away: 'Brasilien', home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇧🇷', kickoff: '2026-06-24 00:00', round: 'Gruppenphase', group: 'C' },
