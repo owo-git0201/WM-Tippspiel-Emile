@@ -20,7 +20,7 @@ const GAMES = [
   { home: 'Bosnien-Herzegowina', away: 'Katar',               home_flag: '🇧🇦', away_flag: '🇶🇦', kickoff: '2026-06-24 21:00', round: 'Gruppenphase', group: 'B' },
 
   // === GRUPPE C: Brasilien · Marokko · Haiti · Schottland ===
-  { home: 'Brasilien',  away: 'Marokko',   home_flag: '🇧🇷', away_flag: '🇲🇦', kickoff: '2026-06-13 00:00', round: 'Gruppenphase', group: 'C' },
+  { home: 'Brasilien',  away: 'Marokko',   home_flag: '🇧🇷', away_flag: '🇲🇦', kickoff: '2026-06-14 00:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Haiti',      away: 'Schottland', home_flag: '🇭🇹', away_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', kickoff: '2026-06-14 03:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Schottland', away: 'Marokko',   home_flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', away_flag: '🇲🇦', kickoff: '2026-06-20 00:00', round: 'Gruppenphase', group: 'C' },
   { home: 'Brasilien',  away: 'Haiti',     home_flag: '🇧🇷', away_flag: '🇭🇹', kickoff: '2026-06-20 02:30', round: 'Gruppenphase', group: 'C' },
@@ -46,14 +46,14 @@ const GAMES = [
   // === GRUPPE F: Niederlande · Japan · Schweden · Tunesien ===
   { home: 'Niederlande', away: 'Japan',       home_flag: '🇳🇱', away_flag: '🇯🇵', kickoff: '2026-06-14 22:00', round: 'Gruppenphase', group: 'F' },
   { home: 'Schweden',    away: 'Tunesien',    home_flag: '🇸🇪', away_flag: '🇹🇳', kickoff: '2026-06-15 04:00', round: 'Gruppenphase', group: 'F' },
-  { home: 'Niederlande', away: 'Schweden',    home_flag: '🇳🇱', away_flag: '🇸🇪', kickoff: '2026-06-20 21:00', round: 'Gruppenphase', group: 'F' },
+  { home: 'Niederlande', away: 'Schweden',    home_flag: '🇳🇱', away_flag: '🇸🇪', kickoff: '2026-06-20 19:00', round: 'Gruppenphase', group: 'F' },
   { home: 'Tunesien',    away: 'Japan',       home_flag: '🇹🇳', away_flag: '🇯🇵', kickoff: '2026-06-21 06:00', round: 'Gruppenphase', group: 'F' },
   { home: 'Tunesien',    away: 'Niederlande', home_flag: '🇹🇳', away_flag: '🇳🇱', kickoff: '2026-06-26 01:00', round: 'Gruppenphase', group: 'F' },
   { home: 'Japan',       away: 'Schweden',    home_flag: '🇯🇵', away_flag: '🇸🇪', kickoff: '2026-06-26 01:00', round: 'Gruppenphase', group: 'F' },
 
   // === GRUPPE G: Belgien · Ägypten · Iran · Neuseeland ===
   { home: 'Belgien',    away: 'Ägypten',   home_flag: '🇧🇪', away_flag: '🇪🇬', kickoff: '2026-06-15 21:00', round: 'Gruppenphase', group: 'G' },
-  { home: 'Iran',       away: 'Neuseeland', home_flag: '🇮🇷', away_flag: '🇳🇿', kickoff: '2026-06-16 00:00', round: 'Gruppenphase', group: 'G' },
+  { home: 'Iran',       away: 'Neuseeland', home_flag: '🇮🇷', away_flag: '🇳🇿', kickoff: '2026-06-16 03:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Belgien',    away: 'Iran',       home_flag: '🇧🇪', away_flag: '🇮🇷', kickoff: '2026-06-21 21:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Neuseeland', away: 'Ägypten',   home_flag: '🇳🇿', away_flag: '🇪🇬', kickoff: '2026-06-22 03:00', round: 'Gruppenphase', group: 'G' },
   { home: 'Neuseeland', away: 'Belgien',   home_flag: '🇳🇿', away_flag: '🇧🇪', kickoff: '2026-06-27 05:00', round: 'Gruppenphase', group: 'G' },
