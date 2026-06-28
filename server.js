@@ -43,16 +43,15 @@ app.use(session({
 }));
 
 async function seedGames() {
-  const count = await get('SELECT COUNT(*) as n FROM games');
-  if (count.n === 0) {
-    for (const g of GAMES) {
-      await run(
-        'INSERT OR IGNORE INTO games (home_team, away_team, home_flag, away_flag, kickoff, round, group_name) VALUES (?,?,?,?,?,?,?)',
-        [g.home, g.away, g.home_flag, g.away_flag, g.kickoff, g.round, g.group || '']
-      );
-    }
-    console.log(`${GAMES.length} Spiele eingetragen.`);
+  let added = 0;
+  for (const g of GAMES) {
+    const result = await run(
+      'INSERT OR IGNORE INTO games (home_team, away_team, home_flag, away_flag, kickoff, round, group_name) VALUES (?,?,?,?,?,?,?)',
+      [g.home, g.away, g.home_flag, g.away_flag, g.kickoff, g.round, g.group || '']
+    );
+    if (result && result.changes > 0) added++;
   }
+  if (added > 0) console.log(`${added} neue Spiele eingetragen.`);
 }
 
 app.use((req, res, next) => {
@@ -268,12 +267,15 @@ app.get('/ranking', async (req, res) => {
   for (const cls of classes) {
     classRankings[cls.name] = await all(`
       SELECT u.id, u.display_name, u.role, u.disqualified,
-        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) as total_points
+        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) as total_points,
+        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0) as power_points
       FROM users u
       LEFT JOIN tips t ON t.user_id = u.id
       WHERE (u.class1_id = ? OR u.class2_id = ?) AND u.role != 'admin'
       GROUP BY u.id
-      ORDER BY total_points DESC
+      ORDER BY total_points DESC,
+        (COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) -
+         COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0)) DESC
       LIMIT 10
     `, [cls.id, cls.id]);
   }

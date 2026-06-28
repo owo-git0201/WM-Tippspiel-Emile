@@ -1,11 +1,15 @@
 const ROUND_MULTIPLIERS = {
-  'Gruppenphase':    1,
-  'Achtelfinale':    2,
-  'Viertelfinale':   2,
-  'Halbfinale':      3,
-  'Spiel um Platz 3': 2,
-  'Finale':          4,
+  'Gruppenphase':      1,
+  'Runde der 32':      2,
+  'Runde der 16':      2,
+  'Viertelfinale':     3,
+  'Halbfinale':        3,
+  'Spiel um Platz 3':  2,
+  'Finale':            4,
 };
+
+// K.O.-Runden: Powerspiel ist zweischneidig (Minus bei Fehltipp)
+const KO_ROUNDS = new Set(['Runde der 32', 'Runde der 16', 'Viertelfinale', 'Halbfinale', 'Finale']);
 
 const POINTS_TENDENCY = 2;
 const POINTS_EXACT = 4;
@@ -22,6 +26,7 @@ function calcPoints(tip, game) {
   if (!tip.tip_tendency) return 0;
 
   const multiplier = ROUND_MULTIPLIERS[game.round] || 1;
+  const isKO = KO_ROUNDS.has(game.round);
   const actualTendency = getTendency(game.home_score, game.away_score);
 
   let basePts = 0;
@@ -33,9 +38,18 @@ function calcPoints(tip, game) {
   }
 
   const baseTotal = basePts * multiplier;
-  const powerBonus = tip.is_powerplay && baseTotal > 0 ? baseTotal * (POWERPLAY_MULTIPLIER - 1) : 0;
 
-  return { total: baseTotal + powerBonus, base: baseTotal, powerBonus };
+  if (tip.is_powerplay) {
+    if (isKO && basePts === 0) {
+      // K.O. Risiko: falsch getippt → Minus = Basis-Volltreffer der Runde
+      const minus = POINTS_EXACT * multiplier;
+      return { total: -minus, base: 0, powerBonus: -minus };
+    }
+    const powerBonus = baseTotal > 0 ? baseTotal * (POWERPLAY_MULTIPLIER - 1) : 0;
+    return { total: baseTotal + powerBonus, base: baseTotal, powerBonus };
+  }
+
+  return { total: baseTotal, base: baseTotal, powerBonus: 0 };
 }
 
 function calcPointsTotal(tip, game) {
@@ -44,4 +58,4 @@ function calcPointsTotal(tip, game) {
   return r.total;
 }
 
-module.exports = { calcPoints, calcPointsTotal, getTendency, ROUND_MULTIPLIERS, POINTS_TENDENCY, POINTS_EXACT, POWERPLAY_MULTIPLIER };
+module.exports = { calcPoints, calcPointsTotal, getTendency, ROUND_MULTIPLIERS, KO_ROUNDS, POINTS_TENDENCY, POINTS_EXACT, POWERPLAY_MULTIPLIER };

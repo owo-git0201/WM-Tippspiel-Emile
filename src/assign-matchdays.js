@@ -1,18 +1,27 @@
 const { all, run } = require('./db');
 
-// Weist jedem Gruppenphasen-Spiel seine ECHTE Spieltag-Nummer (1/2/3) zu.
-// Hintergrund: Ein "Spieltag" ist die Runde, in der alle Teams einer Gruppe
-// einmal gegeneinander gespielt haben — NICHT ein Kalender-Datumsfenster.
-// Da die 12 Gruppen zeitlich versetzt spielen, überlappen sich die Spieltage
-// im Kalender (z.B. am 18.06. läuft Gruppe-A-Spieltag-2 und Gruppe-L-Spieltag-1).
-// Pro Gruppe gibt es 4 Teams → 6 Spiele → 2 pro Spieltag. Nach Datum sortiert
-// sind die ersten 2 = Spieltag 1, die nächsten 2 = Spieltag 2, die letzten 2 = 3.
+// Weist Spielen ihre Powerspiel-Slot-Nummer zu:
+// Gruppenphase: 1/2/3 pro Gruppe (je 2 Spiele in Datum-Reihenfolge)
+// Runde der 32: matchday = 4
+// Runde der 16: matchday = 5
+// Viertelfinale + Halbfinale + Finale: matchday = 6
 // Idempotent: kann bei jedem Start laufen.
+
+const KO_SLOT_MAP = {
+  'Runde der 32':  4,
+  'Runde der 16':  5,
+  'Viertelfinale': 6,
+  'Halbfinale':    6,
+  'Finale':        6,
+};
+
 async function assignMatchdays() {
+  let updated = 0;
+
+  // Gruppenphase: 1/2/3 pro Gruppe
   const groups = await all(
     "SELECT DISTINCT group_name FROM games WHERE round = 'Gruppenphase' AND group_name != '' ORDER BY group_name"
   );
-  let updated = 0;
   for (const { group_name } of groups) {
     const games = await all(
       "SELECT id FROM games WHERE round = 'Gruppenphase' AND group_name = ? ORDER BY datetime(kickoff), id",
@@ -24,6 +33,16 @@ async function assignMatchdays() {
       updated++;
     }
   }
+
+  // K.O.-Runden: Slots 4/5/6
+  for (const [round, slot] of Object.entries(KO_SLOT_MAP)) {
+    const koGames = await all('SELECT id FROM games WHERE round = ?', [round]);
+    for (const g of koGames) {
+      await run('UPDATE games SET matchday = ? WHERE id = ?', [slot, g.id]);
+      updated++;
+    }
+  }
+
   return updated;
 }
 
