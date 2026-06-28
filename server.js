@@ -46,8 +46,8 @@ async function seedGames() {
   let added = 0;
   for (const g of GAMES) {
     const existing = await get(
-      'SELECT id FROM games WHERE home_team = ? AND away_team = ?',
-      [g.home, g.away]
+      'SELECT id FROM games WHERE home_team = ? AND away_team = ? AND kickoff = ?',
+      [g.home, g.away, g.kickoff]
     );
     if (!existing) {
       await run(
