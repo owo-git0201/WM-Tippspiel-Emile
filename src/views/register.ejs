@@ -1,4 +1,48 @@
 <%- include('partials/header') %>
+<% const registrationClosed = typeof closed !== 'undefined' && closed; %>
+
+<% if (registrationClosed) { %>
+<div class="closed-page">
+  <div class="closed-inner">
+
+    <div class="closed-logo">
+      <img src="https://www.emile-montessori.de/wp-content/uploads/logo-emile-eine-schule-551x143.png" alt="EmiLe" class="auth-school-logo">
+    </div>
+
+    <div class="closed-film-card">
+      <div class="closed-film-stripe"></div>
+      <div class="closed-film-content">
+        <div class="closed-film-label">WM 2026 &nbsp;&middot;&nbsp; Tippspiel</div>
+        <div class="closed-film-headline">Abpfiff.</div>
+        <div class="closed-film-sub">Die Gruppenphase ist Geschichte.<br>Seit dem 28. Juni läuft die K.O.-Phase.</div>
+      </div>
+      <div class="closed-film-stripe"></div>
+    </div>
+
+    <p class="closed-body">
+      Wer jetzt tippt, hat schon die ganze Vorrunde mitgemacht &mdash;
+      herzlichen Glückwunsch! Für alle anderen: die Anmeldung ist geschlossen,
+      damit das Spiel fair bleibt.
+    </p>
+
+    <div class="closed-em28">
+      <div class="closed-em28-eyebrow">Schon mal vormerken:</div>
+      <div class="closed-em28-flags">🏴󠁧󠁢󠁥󠁮󠁧󠁿&nbsp; 🏴󠁧󠁢󠁳󠁣󠁴󠁿&nbsp; 🏴󠁧󠁢󠁷󠁬󠁳󠁿&nbsp; 🇮🇪</div>
+      <div class="closed-em28-title">EM 2028 &mdash; Großbritannien &amp; Irland</div>
+      <div class="closed-em28-venues">Wembley &nbsp;&middot;&nbsp; Hampden Park &nbsp;&middot;&nbsp; Aviva Stadium Dublin</div>
+      <div class="closed-em28-promise">Das EmiLe Tippspiel tippt dann wieder mit &mdash; sei dabei!</div>
+    </div>
+
+    <div class="closed-actions">
+      <a href="/public" class="btn btn-outline">🏆 Zur Rangliste</a>
+      <a href="/auth/login" class="btn btn-primary">Anmelden</a>
+    </div>
+
+  </div>
+</div>
+
+<% } else { %>
+
 <div class="auth-page">
   <div class="auth-card auth-card-wide">
     <div class="auth-logo">
@@ -8,32 +52,10 @@
     <h1 class="auth-title">Jetzt mitmachen!</h1>
     <p class="auth-sub">Registriere dich einmalig — deine ganze Familie tippt unter einem Konto.</p>
 
-    <% const registrationClosed = typeof closed !== 'undefined' && closed; %>
     <% if (error) { %>
     <div class="alert alert-error"><%= error %></div>
     <% } %>
 
-    <% if (registrationClosed) { %>
-    <div class="reg-closed-box">
-      <div class="reg-closed-icon">⏱️</div>
-      <h2 class="reg-closed-title">Zu spät für die WM 2026 —<br>aber nur knapp!</h2>
-      <p class="reg-closed-text">Die Anmeldung ist geschlossen. Die K.O.-Phase läuft bereits und es wäre unfair, jetzt noch einzusteigen.</p>
-      <div class="reg-closed-next">
-        <div class="reg-closed-next-label">Aber die nächste Chance kommt bestimmt:</div>
-        <div class="reg-closed-next-event">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EM 2028 &mdash; Großbritannien &amp; Irland</div>
-        <div class="reg-closed-next-sub">Wembley · Hampden Park · Aviva Stadium Dublin</div>
-        <div class="reg-closed-next-sub">Das EmiLe Tippspiel tippt dann wieder mit. Wir freuen uns auf dich!</div>
-      </div>
-      <div class="reg-closed-links">
-        <a href="/public" class="btn btn-outline">🏆 Zur Rangliste</a>
-        <a href="/auth/login" class="btn btn-primary">Anmelden</a>
-      </div>
-    </div>
-    <% } else { %>
-
-    <% } %>
-
-    <% if (!registrationClosed) { %>
     <form method="POST" action="/auth/register" class="auth-form">
       <div class="field">
         <label>Anzeigename <span class="required">*</span></label>
@@ -112,7 +134,7 @@
             <li>✅ Faire Teilnahme — kein Austausch von Zugangsdaten</li>
             <li>✅ Die Schule behält sich vor, Konten bei Regelverstößen zu sperren</li>
           </ul>
-          <p style="margin-top:10px;"><strong>Spielauswahl:</strong> Wir tippen nur Spiele mit bekannten Fußballnationen — also Europa, die großen Südamerikaner, USA/Mexiko/Kanada sowie attraktive Vertreter aus Afrika und Asien. Exoten ohne Wiedererkennungswert (z.B. Curaçao, Katar, Haiti) sind nicht dabei. Das reduziert die Spielanzahl auf ein überschaubares Maß.</p>
+          <p style="margin-top:10px;"><strong>Spielauswahl:</strong> Wir tippen nur Spiele mit bekannten Fußballnationen — also Europa, die großen Südamerikaner, USA/Mexiko/Kanada sowie attraktive Vertreter aus Afrika und Asien. Das reduziert die Spielanzahl auf ein überschaubares Maß.</p>
           <p><strong>Datenschutz:</strong> Es werden ausschließlich Anzeigename, Benutzername und Passwort gespeichert — keine E-Mail-Adresse, keine weiteren personenbezogenen Daten. Alle Daten bleiben schulintern und werden nach Abschluss des Turniers gelöscht.</p>
           <p>Der gewählte <strong>Anzeigename</strong> ist für alle angemeldeten Teilnehmenden in der Rangliste sichtbar.</p>
         </div>
@@ -130,8 +152,9 @@
 
       <button type="submit" class="btn btn-primary btn-full">Registrieren & mitmachen</button>
     </form>
-    <% } %>
     <p class="auth-switch">Schon registriert? <a href="/auth/login">Anmelden</a></p>
   </div>
 </div>
+
+<% } %>
 <%- include('partials/footer') %>

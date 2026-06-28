@@ -371,17 +371,30 @@ footer { background: var(--green); color: rgba(255,255,255,.7); padding: 20px 24
 .btn-disq:hover { background: #b91c1c; }
 .btn-restore { background: var(--green3); color: var(--green); border: 1px solid var(--green2); }
 
-/* REGISTRIERUNG GESCHLOSSEN */
-.reg-closed-box { text-align: center; padding: 12px 0 24px; }
-.reg-closed-icon { font-size: 3rem; margin-bottom: 12px; }
-.reg-closed-title { font-size: 1.3rem; font-weight: 800; color: var(--text1); margin-bottom: 10px; line-height: 1.3; }
-.reg-closed-text { color: var(--text2); font-size: .9rem; margin-bottom: 24px; }
-.reg-closed-next { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 24px; }
-.reg-closed-next-label { font-size: .78rem; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
-.reg-closed-next-event { font-size: 1.1rem; font-weight: 800; color: var(--text1); margin-bottom: 4px; }
-.reg-closed-next-sub { font-size: .82rem; color: var(--text2); margin-top: 4px; }
-.reg-closed-links { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-.btn-outline { background: transparent; border: 2px solid var(--green); color: var(--green); padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: .9rem; cursor: pointer; }
+/* REGISTRIERUNG GESCHLOSSEN — VOLLSEITE */
+.closed-page { min-height: 100vh; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 32px 16px; }
+.closed-inner { max-width: 540px; width: 100%; text-align: center; }
+.closed-logo { margin-bottom: 28px; }
+.closed-logo .auth-school-logo { max-width: 140px; opacity: .85; }
+
+.closed-film-card { background: #1a2e1a; border-radius: 16px; overflow: hidden; margin-bottom: 28px; }
+.closed-film-stripe { height: 10px; background: repeating-linear-gradient(90deg, #2d4a1e 0 18px, #1a2e1a 18px 24px); }
+.closed-film-content { padding: 32px 24px 28px; }
+.closed-film-label { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: 12px; }
+.closed-film-headline { font-size: 3.2rem; font-weight: 900; color: #fff; line-height: 1; margin-bottom: 12px; letter-spacing: -.02em; }
+.closed-film-sub { font-size: .95rem; color: rgba(255,255,255,.65); line-height: 1.5; }
+
+.closed-body { color: var(--text2); font-size: .9rem; line-height: 1.6; margin-bottom: 28px; }
+
+.closed-em28 { background: var(--surface2); border: 1px solid var(--border); border-radius: 14px; padding: 22px 20px; margin-bottom: 28px; }
+.closed-em28-eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text3); font-weight: 700; margin-bottom: 10px; }
+.closed-em28-flags { font-size: 1.8rem; margin-bottom: 10px; }
+.closed-em28-title { font-size: 1.1rem; font-weight: 800; color: var(--text1); margin-bottom: 6px; }
+.closed-em28-venues { font-size: .8rem; color: var(--text3); margin-bottom: 10px; }
+.closed-em28-promise { font-size: .88rem; color: var(--green); font-weight: 600; }
+
+.closed-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-outline { background: transparent; border: 2px solid var(--green); color: var(--green); padding: 10px 20px; border-radius: 8px; font-weight: 600; font-size: .9rem; cursor: pointer; text-decoration: none; display: inline-block; }
 .btn-outline:hover { background: var(--green3); }
 
 /* K.O.-PHASE REGELN-BANNER */
