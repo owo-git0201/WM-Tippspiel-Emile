@@ -103,16 +103,58 @@
   <% const hasKOGames = games.some(g => g.round !== 'Gruppenphase'); %>
   <% if (hasKOGames) { %>
   <div class="ko-rules-banner">
-    <div class="ko-rules-inner">
-      <span class="ko-rules-icon">⚡</span>
-      <div class="ko-rules-text">
-        <strong>K.O.-Phase läuft!</strong>
-        Basis-Multiplikator: ×2 Runde der 32 &amp; 16, ×3 Viertel- &amp; Halbfinale, ×4 Finale.
-        Powerspiel ×3 — aber <strong>Risiko:</strong> falscher Tipp gibt Minuspunkte!
-        Je <strong>1 Powerspiel</strong> für Runde der 32 / Runde der 16 / VF+HF+Finale.
+    <div class="ko-rules-header">⚡ K.O.-Phase läuft</div>
+    <div class="ko-rules-grid">
+      <div class="ko-rules-item">
+        <div class="ko-rules-item-title">📈 Mehr Punkte</div>
+        <div class="ko-rules-item-body">&times;2 Runde der 32 &amp; 16<br>&times;3 Viertelfinale &amp; Halbfinale<br>&times;4 Finale</div>
+      </div>
+      <div class="ko-rules-sep"></div>
+      <div class="ko-rules-item">
+        <div class="ko-rules-item-title">⚡ Powerspiel &times;3 — mit Risiko</div>
+        <div class="ko-rules-item-body">Richtiger Tipp: Punkte &times;3<br><span class="ko-minus-hint">Falscher Tipp: Minuspunkte!</span><br><em>Gut &uuml;berlegen lohnt sich.</em></div>
+      </div>
+      <div class="ko-rules-sep"></div>
+      <div class="ko-rules-item">
+        <div class="ko-rules-item-title">🎯 3 Powerspiel-Slots</div>
+        <div class="ko-rules-item-body">1&times; Runde der 32<br>1&times; Runde der 16<br>1&times; VF + HF + Finale</div>
       </div>
     </div>
   </div>
+
+  <!-- K.O.-PHASE WILLKOMMEN (einmalig, 3 Tage) -->
+  <div class="ko-welcome-card" id="ko-welcome" style="display:none">
+    <button class="ko-welcome-close" onclick="dismissKOWelcome()" aria-label="schließen">&times;</button>
+    <div class="ko-welcome-title">🆕 Was hat sich zur K.O.-Phase geändert?</div>
+    <div class="ko-welcome-body">
+      <div class="ko-welcome-row">
+        <span class="ko-welcome-icon">📈</span>
+        <div><strong>Multiplikatoren:</strong> Alle K.O.-Tipps bringen mehr Punkte — je weiter die Runde, desto h&ouml;her der Faktor (×2 bis ×4). Ein richtiger Tipp im Finale z&auml;hlt viermal so viel wie in der Gruppenphase.</div>
+      </div>
+      <div class="ko-welcome-row">
+        <span class="ko-welcome-icon">⚡</span>
+        <div><strong>Powerspiel mit Risiko:</strong> Das Powerspiel verdreifacht deinen Tipp wie gewohnt — aber NEU: Liegst du mit einem K.O.-Powerspiel falsch, gibt es <strong>Minuspunkte</strong>. Wer sicher ist, gewinnt. Wer zockt, riskiert.</div>
+      </div>
+      <div class="ko-welcome-row">
+        <span class="ko-welcome-icon">🎯</span>
+        <div><strong>3 Powerspiele für die ganze K.O.-Phase:</strong> Je 1 Powerspiel f&uuml;r Runde der 32, Runde der 16 und den Block VF+HF+Finale. Gut planen!</div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-sm ko-welcome-btn" onclick="dismissKOWelcome()">Alles klar — los tippen! ⚡</button>
+  </div>
+  <script>
+    (function() {
+      var seen = localStorage.getItem('ko_phase_seen_v1');
+      var deadline = new Date('2026-07-01T23:59:00');
+      if (!seen && new Date() <= deadline) {
+        document.getElementById('ko-welcome').style.display = '';
+      }
+    })();
+    function dismissKOWelcome() {
+      localStorage.setItem('ko_phase_seen_v1', '1');
+      document.getElementById('ko-welcome').style.display = 'none';
+    }
+  </script>
   <% } %>
 
   <!-- VIEW TABS -->
