@@ -8,6 +8,7 @@
   const isMyPowerplay = ppForMatchday && ppForMatchday == game.id;
   const mdPowerplayTaken = ppForMatchday && !isMyPowerplay;
   const isAutoTip = hasTip && game.is_auto;
+  const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round);
 %>
 <div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %> <%= hasTip ? 'game-tipped' : '' %>">
 
@@ -63,6 +64,9 @@
 
   <% if (canTip) { %>
   <form class="tip-form" data-game-id="<%= game.id %>" data-autosave="true">
+    <% if (isKOGame) { %>
+    <div class="ko-90min-note">⏱ Tipp gilt f&uuml;r <strong>90 Minuten</strong> &mdash; Unentschieden ist m&ouml;glich</div>
+    <% } %>
     <div class="tendency-picker">
       <label class="tendency-btn <%= game.tip_tendency === 'H' ? 'active' : '' %>">
         <input type="radio" name="tendency_<%= game.id %>" value="H" <%= game.tip_tendency === 'H' ? 'checked' : '' %>>
@@ -91,7 +95,6 @@
     </div>
     <div class="tip-actions">
       <%
-        const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round);
         const koMinus = {'Runde der 32': 8, 'Runde der 16': 8, 'Viertelfinale': 12, 'Halbfinale': 12, 'Finale': 16};
         const minusPts = koMinus[game.round];
       %>
