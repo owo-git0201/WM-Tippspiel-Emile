@@ -29,18 +29,10 @@
         <div class="legend-item"><span class="badge badge-red">&times;2&ndash;4</span> KO</div>
         <p class="legend-sub">Tendenz richtig = <strong>2 Pkt</strong> &middot; Exaktes Ergebnis = <strong>4 Pkt</strong> &middot; Powerspiel = <strong>&times;3</strong></p>
       </div>
-      <div class="hero-powerplay-banner">&#x1F4A1; <strong>Powerspiel:</strong> 1 Spiel pro Spieltag w&auml;hlen &ndash; Punkte &times;3!</div>
+      <div class="hero-powerplay-banner">&#x26A1; <strong>K.O.-Phase:</strong> 1 Powerspiel pro Slot &ndash; ×2 bis ×4 &amp; Risiko!</div>
     </div>
   </div>
 </div>
-
-<!-- SPÄTSTARTER-BANNER -->
-<% if (typeof lateJoinOpen !== 'undefined' && lateJoinOpen) { %>
-<div class="latejoin-banner">
-  <span class="latejoin-dice">🎲</span>
-  <span><strong>Spätstarter willkommen!</strong> Wer jetzt noch einsteigt, bekommt bereits gespielte Partien automatisch aus den abgegebenen Tipps eines zufälligen Mitspielers zugeteilt — gleiche Chancen für alle. Sagt's weiter: Anmeldung bis Ende der Gruppenphase möglich!</span>
-</div>
-<% } %>
 
 <!-- COUNTDOWN BANNER -->
 <% if (nextGame) { %>
@@ -107,6 +99,22 @@
   </div>
   <% } %>
 
+  <!-- K.O.-PHASE REGELN-BANNER -->
+  <% const hasKOGames = games.some(g => g.round !== 'Gruppenphase'); %>
+  <% if (hasKOGames) { %>
+  <div class="ko-rules-banner">
+    <div class="ko-rules-inner">
+      <span class="ko-rules-icon">⚡</span>
+      <div class="ko-rules-text">
+        <strong>K.O.-Phase läuft!</strong>
+        Basis-Multiplikator: ×2 Runde der 32 &amp; 16, ×3 Viertel- &amp; Halbfinale, ×4 Finale.
+        Powerspiel ×3 — aber <strong>Risiko:</strong> falscher Tipp gibt Minuspunkte!
+        Je <strong>1 Powerspiel</strong> für Runde der 32 / Runde der 16 / VF+HF+Finale.
+      </div>
+    </div>
+  </div>
+  <% } %>
+
   <!-- VIEW TABS -->
   <div class="view-tabs">
     <button class="tab-btn active" data-view="day">&#x1F4C5; Nach Tag</button>
@@ -116,16 +124,47 @@
 
   <!-- NACH TAG -->
   <div class="view-panel active" id="view-day">
-    <% Object.keys(byDay).forEach(dayKey => { %>
+    <%
+      const koDays = {};
+      const groupDays = {};
+      Object.keys(byDay).forEach(dayKey => {
+        const dayGames = byDay[dayKey];
+        if (dayGames.some(g => g.round !== 'Gruppenphase')) koDays[dayKey] = dayGames;
+        else groupDays[dayKey] = dayGames;
+      });
+    %>
+
+    <% Object.keys(koDays).forEach(dayKey => { %>
     <div class="game-group">
       <h2 class="group-title"><%= dayKey %></h2>
       <div class="games-grid">
-        <% byDay[dayKey].forEach(game => { %>
+        <% koDays[dayKey].forEach(game => { %>
         <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>
     <% }) %>
+
+    <% if (Object.keys(groupDays).length > 0) { %>
+    <div class="group-phase-collapse">
+      <button class="collapse-toggle" onclick="const p=this.closest('.group-phase-collapse');p.classList.toggle('open');this.querySelector('.collapse-label').textContent=p.classList.contains('open')?'📋 Gruppenphase verbergen':'📋 Gruppenphase anzeigen'">
+        <span class="collapse-label">📋 Gruppenphase anzeigen</span>
+        <span class="collapse-arrow">▼</span>
+      </button>
+      <div class="collapse-body">
+        <% Object.keys(groupDays).forEach(dayKey => { %>
+        <div class="game-group">
+          <h2 class="group-title"><%= dayKey %></h2>
+          <div class="games-grid">
+            <% groupDays[dayKey].forEach(game => { %>
+            <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
+            <% }) %>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
+    <% } %>
   </div>
 
   <!-- NACH SPIELTAG -->

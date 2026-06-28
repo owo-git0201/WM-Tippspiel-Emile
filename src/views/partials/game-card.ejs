@@ -14,6 +14,7 @@
   <div class="game-header">
     <span class="game-time"><%= kickoff.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'}) %> Uhr</span>
     <% if (game.group_name) { %><span class="group-badge">Gr. <%= game.group_name %></span><% } %>
+    <% if (!game.group_name && game.round !== 'Gruppenphase') { %><span class="ko-round-badge"><%= game.round %></span><% } %>
     <% if (isMyPowerplay) { %><span class="powerplay-tag">⚡ Powerspiel</span><% } %>
     <% if (isFinished) { %><span class="finished-tag">Abgeschlossen</span><% } %>
     <% if (isPast && !isFinished) { %><span class="live-tag">Läuft</span><% } %>
@@ -89,12 +90,16 @@
       </div>
     </div>
     <div class="tip-actions">
+      <% const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round); %>
       <label class="powerplay-toggle <%= mdPowerplayTaken ? 'disabled' : '' %>">
         <input type="checkbox" name="powerplay_<%= game.id %>"
           <%= isMyPowerplay ? 'checked' : '' %>
           <%= mdPowerplayTaken ? 'disabled' : '' %>>
-        <span>⚡ Powerspiel ×3</span>
+        <span>⚡ Powerspiel ×3<% if (isKOGame) { %> &nbsp;<span class="ko-risiko-hint">⚠️ Risiko</span><% } %></span>
       </label>
+      <% if (isKOGame) { %>
+      <div class="ko-risiko-info">Falscher K.O.-Tipp = Minuspunkte!</div>
+      <% } %>
     </div>
     <div class="tip-status" id="status-<%= game.id %>"></div>
   </form>

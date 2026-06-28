@@ -137,16 +137,17 @@ app.get('/', async (req, res) => {
     byGroup[key].push(g);
   }
 
-  // Gruppiere nach Spieltag (1/2/3 anhand Datum)
-  function getMatchdayLabel(kickoff) {
-    const d = new Date(kickoff);
+  // Gruppiere nach Spieltag (1/2/3 Gruppenphase, danach K.O.-Runde)
+  function getMatchdayLabel(game) {
+    if (game.round !== 'Gruppenphase') return game.round;
+    const d = new Date(game.kickoff);
     if (d < new Date('2026-06-18T00:00:00')) return '1. Spieltag';
     if (d < new Date('2026-06-24T00:00:00')) return '2. Spieltag';
     return '3. Spieltag';
   }
   const byMatchday = {};
   for (const g of games) {
-    const key = getMatchdayLabel(g.kickoff);
+    const key = getMatchdayLabel(g);
     if (!byMatchday[key]) byMatchday[key] = [];
     byMatchday[key].push(g);
   }
