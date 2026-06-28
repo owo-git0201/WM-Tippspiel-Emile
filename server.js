@@ -45,11 +45,17 @@ app.use(session({
 async function seedGames() {
   let added = 0;
   for (const g of GAMES) {
-    const result = await run(
-      'INSERT OR IGNORE INTO games (home_team, away_team, home_flag, away_flag, kickoff, round, group_name) VALUES (?,?,?,?,?,?,?)',
-      [g.home, g.away, g.home_flag, g.away_flag, g.kickoff, g.round, g.group || '']
+    const existing = await get(
+      'SELECT id FROM games WHERE home_team = ? AND away_team = ?',
+      [g.home, g.away]
     );
-    if (result && result.changes > 0) added++;
+    if (!existing) {
+      await run(
+        'INSERT INTO games (home_team, away_team, home_flag, away_flag, kickoff, round, group_name) VALUES (?,?,?,?,?,?,?)',
+        [g.home, g.away, g.home_flag, g.away_flag, g.kickoff, g.round, g.group || '']
+      );
+      added++;
+    }
   }
   if (added > 0) console.log(`${added} neue Spiele eingetragen.`);
 }

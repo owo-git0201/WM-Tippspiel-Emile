@@ -26,8 +26,8 @@
         <div class="legend-item"><span class="badge badge-green">2 Pkt</span> Tendenz</div>
         <div class="legend-item"><span class="badge badge-gold">4 Pkt</span> Exakt</div>
         <div class="legend-item"><span class="badge badge-orange">&#x26A1; &times;3</span> Powerspiel</div>
-        <div class="legend-item"><span class="badge badge-red">&times;2&ndash;4</span> KO</div>
-        <p class="legend-sub">Tendenz richtig = <strong>2 Pkt</strong> &middot; Exaktes Ergebnis = <strong>4 Pkt</strong> &middot; Powerspiel = <strong>&times;3</strong></p>
+        <div class="legend-item"><span class="badge badge-red">&times;2&ndash;4</span> K.O.</div>
+        <p class="legend-sub">K.O.-Multiplikator: <strong>&times;2</strong> R32/R16 &middot; <strong>&times;3</strong> VF/HF &middot; <strong>&times;4</strong> Finale &mdash; Powerspiel &times;3, falscher Tipp = <span style="color:var(--red)">Minus</span></p>
       </div>
       <div class="hero-powerplay-banner">&#x26A1; <strong>K.O.-Phase:</strong> 1 Powerspiel pro Slot &ndash; ×2 bis ×4 &amp; Risiko!</div>
     </div>
@@ -117,54 +117,48 @@
 
   <!-- VIEW TABS -->
   <div class="view-tabs">
-    <button class="tab-btn active" data-view="day">&#x1F4C5; Nach Tag</button>
+    <button class="tab-btn active" data-view="day">&#x26A1; K.O.-Phase</button>
+    <button class="tab-btn" data-view="groupstage">&#x1F4CB; Gruppenphase</button>
     <button class="tab-btn" data-view="matchday">&#x26BD; Spieltag</button>
-    <button class="tab-btn" data-view="group">&#x1F5C2; Nach Gruppe</button>
+    <button class="tab-btn" data-view="group">&#x1F5C2; Gruppe</button>
   </div>
 
-  <!-- NACH TAG -->
+  <!-- K.O.-PHASE NACH TAG -->
   <div class="view-panel active" id="view-day">
     <%
-      const koDays = {};
-      const groupDays = {};
-      Object.keys(byDay).forEach(dayKey => {
-        const dayGames = byDay[dayKey];
-        if (dayGames.some(g => g.round !== 'Gruppenphase')) koDays[dayKey] = dayGames;
-        else groupDays[dayKey] = dayGames;
-      });
+      const koDayKeys = Object.keys(byDay).filter(dayKey =>
+        byDay[dayKey].some(g => g.round !== 'Gruppenphase')
+      );
     %>
-
-    <% Object.keys(koDays).forEach(dayKey => { %>
+    <% if (koDayKeys.length === 0) { %>
+    <div class="empty-hint">K.O.-Spiele erscheinen hier sobald sie beginnen.</div>
+    <% } %>
+    <% koDayKeys.forEach(dayKey => { %>
     <div class="game-group">
       <h2 class="group-title"><%= dayKey %></h2>
       <div class="games-grid">
-        <% koDays[dayKey].forEach(game => { %>
+        <% byDay[dayKey].filter(g => g.round !== 'Gruppenphase').forEach(game => { %>
         <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>
     <% }) %>
+  </div>
 
-    <% if (Object.keys(groupDays).length > 0) { %>
-    <div class="group-phase-collapse">
-      <button class="collapse-toggle" onclick="const p=this.closest('.group-phase-collapse');p.classList.toggle('open');this.querySelector('.collapse-label').textContent=p.classList.contains('open')?'📋 Gruppenphase verbergen':'📋 Gruppenphase anzeigen'">
-        <span class="collapse-label">📋 Gruppenphase anzeigen</span>
-        <span class="collapse-arrow">▼</span>
-      </button>
-      <div class="collapse-body">
-        <% Object.keys(groupDays).forEach(dayKey => { %>
-        <div class="game-group">
-          <h2 class="group-title"><%= dayKey %></h2>
-          <div class="games-grid">
-            <% groupDays[dayKey].forEach(game => { %>
-            <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
-            <% }) %>
-          </div>
-        </div>
+  <!-- GRUPPENPHASE -->
+  <div class="view-panel" id="view-groupstage">
+    <% ['1. Spieltag', '2. Spieltag', '3. Spieltag'].forEach(mdKey => { %>
+    <% if (byMatchday[mdKey]) { %>
+    <div class="game-group">
+      <h2 class="group-title"><%= mdKey %></h2>
+      <div class="games-grid">
+        <% byMatchday[mdKey].forEach(game => { %>
+        <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
         <% }) %>
       </div>
     </div>
     <% } %>
+    <% }) %>
   </div>
 
   <!-- NACH SPIELTAG -->
