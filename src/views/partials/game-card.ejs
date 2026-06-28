@@ -90,16 +90,22 @@
       </div>
     </div>
     <div class="tip-actions">
-      <% const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round); %>
-      <label class="powerplay-toggle <%= mdPowerplayTaken ? 'disabled' : '' %>">
-        <input type="checkbox" name="powerplay_<%= game.id %>"
-          <%= isMyPowerplay ? 'checked' : '' %>
-          <%= mdPowerplayTaken ? 'disabled' : '' %>>
-        <span>⚡ Powerspiel ×3<% if (isKOGame) { %> &nbsp;<span class="ko-risiko-hint">⚠️ Risiko</span><% } %></span>
-      </label>
-      <% if (isKOGame) { %>
-      <div class="ko-risiko-info">Falscher K.O.-Tipp = Minuspunkte!</div>
-      <% } %>
+      <%
+        const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round);
+        const koMinus = {'Runde der 32': 8, 'Runde der 16': 8, 'Viertelfinale': 12, 'Halbfinale': 12, 'Finale': 16};
+        const minusPts = koMinus[game.round];
+      %>
+      <div class="powerplay-wrap">
+        <label class="powerplay-toggle <%= mdPowerplayTaken ? 'disabled' : '' %>">
+          <input type="checkbox" name="powerplay_<%= game.id %>"
+            <%= isMyPowerplay ? 'checked' : '' %>
+            <%= mdPowerplayTaken ? 'disabled' : '' %>>
+          <span>⚡ Powerspiel &times;3</span>
+        </label>
+        <% if (isKOGame) { %>
+        <div class="ko-risiko-line">⚠ Fehltipp kostet &minus;<%= minusPts %> Pkt &mdash; gut &uuml;berlegen!</div>
+        <% } %>
+      </div>
     </div>
     <div class="tip-status" id="status-<%= game.id %>"></div>
   </form>

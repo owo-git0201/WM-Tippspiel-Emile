@@ -424,8 +424,8 @@ footer { background: var(--green); color: rgba(255,255,255,.7); padding: 20px 24
 .ko-round-badge { font-size: .6rem; font-weight: 800; padding: 2px 7px; border-radius: 4px; background: #1e3a5f; color: #93c5fd; letter-spacing: .02em; white-space: nowrap; }
 
 /* POWERSPIEL RISIKO */
-.ko-risiko-hint { font-size: .7rem; font-weight: 700; color: #b45309; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 4px; padding: 1px 5px; vertical-align: middle; }
-.ko-risiko-info { font-size: .72rem; color: #92400e; background: #fef3c7; border-left: 3px solid #f59e0b; padding: 5px 8px; border-radius: 0 4px 4px 0; margin-top: 4px; }
+.powerplay-wrap { display: flex; flex-direction: column; gap: 3px; }
+.ko-risiko-line { font-size: .72rem; color: #92400e; padding-left: 22px; line-height: 1.4; }
 
 /* GRUPPENPHASE COLLAPSE */
 .group-phase-collapse { margin-top: 24px; }
