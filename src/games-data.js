@@ -100,7 +100,7 @@ const GAMES = [
   { home: 'Kroatien', away: 'Ghana',    home_flag: '🇭🇷', away_flag: '🇬🇭', kickoff: '2026-06-27 23:00', round: 'Gruppenphase', group: 'L' },
 
   // === RUNDE DER 32 ===
-  { home: 'Südkorea',           away: 'Kanada',              home_flag: '🇰🇷', away_flag: '🇨🇦', kickoff: '2026-06-28 21:00', round: 'Runde der 32', group: '' },
+  { home: 'Südafrika',          away: 'Kanada',              home_flag: '🇿🇦', away_flag: '🇨🇦', kickoff: '2026-06-28 21:00', round: 'Runde der 32', group: '' },
   { home: 'Brasilien',          away: 'Japan',               home_flag: '🇧🇷', away_flag: '🇯🇵', kickoff: '2026-06-29 19:00', round: 'Runde der 32', group: '' },
   { home: 'Deutschland',        away: 'Paraguay',            home_flag: '🇩🇪', away_flag: '🇵🇾', kickoff: '2026-06-29 22:30', round: 'Runde der 32', group: '' },
   { home: 'Niederlande',        away: 'Marokko',             home_flag: '🇳🇱', away_flag: '🇲🇦', kickoff: '2026-06-30 03:00', round: 'Runde der 32', group: '' },
