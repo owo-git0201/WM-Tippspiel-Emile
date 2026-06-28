@@ -33,6 +33,6 @@ function getMatchdayBounds(date) {
 // WM-Sieger Deadline: nach Matchday 2 ist der Wissensvorsprung zu hoch
 const CHAMPION_DEADLINE = new Date('2026-06-19T00:00:00');
 // Spätanmeldung bis 1. Juli (danach K.O.-Phase zu weit fortgeschritten)
-const REGISTRATION_DEADLINE = new Date('2026-07-01T00:00:00');
+const REGISTRATION_DEADLINE = new Date('2026-06-28T21:00:00');
 
 module.exports = { MATCHDAYS, getMatchdayForDate, getMatchdayBounds, CHAMPION_DEADLINE, REGISTRATION_DEADLINE };

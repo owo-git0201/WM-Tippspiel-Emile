@@ -13,6 +13,26 @@
     <div class="alert alert-error"><%= error %></div>
     <% } %>
 
+    <% if (registrationClosed) { %>
+    <div class="reg-closed-box">
+      <div class="reg-closed-icon">⏱️</div>
+      <h2 class="reg-closed-title">Zu spät für die WM 2026 —<br>aber nur knapp!</h2>
+      <p class="reg-closed-text">Die Anmeldung ist geschlossen. Die K.O.-Phase läuft bereits und es wäre unfair, jetzt noch einzusteigen.</p>
+      <div class="reg-closed-next">
+        <div class="reg-closed-next-label">Aber die nächste Chance kommt bestimmt:</div>
+        <div class="reg-closed-next-event">🏴󠁧󠁢󠁥󠁮󠁧󠁿 EM 2028 &mdash; Großbritannien &amp; Irland</div>
+        <div class="reg-closed-next-sub">Wembley · Hampden Park · Aviva Stadium Dublin</div>
+        <div class="reg-closed-next-sub">Das EmiLe Tippspiel tippt dann wieder mit. Wir freuen uns auf dich!</div>
+      </div>
+      <div class="reg-closed-links">
+        <a href="/public" class="btn btn-outline">🏆 Zur Rangliste</a>
+        <a href="/auth/login" class="btn btn-primary">Anmelden</a>
+      </div>
+    </div>
+    <% } else { %>
+
+    <% } %>
+
     <% if (!registrationClosed) { %>
     <form method="POST" action="/auth/register" class="auth-form">
       <div class="field">
