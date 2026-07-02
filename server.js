@@ -98,10 +98,13 @@ app.get('/', async (req, res) => {
     ORDER BY g.kickoff ASC
   `, [userId]);
 
-  // Nur Spiele mit mind. einem Patenland anzeigen
-  const games = allGames.filter(g =>
-    PATENLAENDER.has(g.home_team) || PATENLAENDER.has(g.away_team)
-  );
+  // Nur Spiele mit mind. einem Patenland anzeigen (auch TBD-Namen wie "Portugal / Kroatien")
+  function isPatenland(name) {
+    if (PATENLAENDER.has(name)) return true;
+    if (name.includes(' / ')) return name.split(' / ').some(t => PATENLAENDER.has(t.trim()));
+    return false;
+  }
+  const games = allGames.filter(g => isPatenland(g.home_team) || isPatenland(g.away_team));
 
   // Pro echtem Spieltag (1/2/3) max. 1 Powerspiel. Map: Spieltag-Nr → game_id
   // des bereits gesetzten Powerspiels. Damit deaktiviert die UI gezielt die
