@@ -181,8 +181,8 @@
       });
       const hasR16 = Object.keys(r16DayMap).length > 0;
       const hasR32 = Object.keys(r32DayMap).length > 0;
-      const r32HasFuture = Object.values(r32DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return new Date(g.kickoff) > now; });
-      const r16HasFuture = Object.values(r16DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return new Date(g.kickoff) > now; });
+      const r32HasFuture = Object.values(r32DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return !g.finished; });
+      const r16HasFuture = Object.values(r16DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return !g.finished; });
     %>
     <% if (!hasR16 && !hasR32) { %>
     <div class="empty-hint">K.O.-Spiele erscheinen hier sobald sie beginnen.</div>
