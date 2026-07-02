@@ -212,8 +212,8 @@
     <!-- Achtelfinale (Runde der 16) — einklappbar, offen wenn noch Spiele offen -->
     <% if (hasR16) { %>
     <div class="ko-collapse <%= r16HasFuture ? 'open' : '' %>" id="r16-section">
-      <button class="ko-collapse-btn" data-section="r16-section" data-open="▲ Achtelfinale verbergen" data-closed="▼ Achtelfinale anzeigen" onclick="toggleKO(this)">
-        <%= r16HasFuture ? '▲ Achtelfinale verbergen' : '▼ Achtelfinale anzeigen' %>
+      <button class="ko-collapse-btn" data-section="r16-section" data-open="▲ Runde der 16 verbergen" data-closed="▼ Runde der 16 anzeigen" onclick="toggleKO(this)">
+        <%= r16HasFuture ? '▲ Runde der 16 verbergen' : '▼ Runde der 16 anzeigen' %>
       </button>
       <div class="ko-collapse-body">
         <% Object.keys(r16DayMap).forEach(function(dayKey) { %>
