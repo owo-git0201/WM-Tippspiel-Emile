@@ -122,10 +122,10 @@ const GAMES = [
   { home: 'Paraguay',                 away: 'Frankreich',           home_flag: '🇵🇾', away_flag: '🇫🇷', kickoff: '2026-07-04 23:00', round: 'Runde der 16', group: '' },
   { home: 'Brasilien',                away: 'Norwegen',             home_flag: '🇧🇷', away_flag: '🇳🇴', kickoff: '2026-07-05 22:00', round: 'Runde der 16', group: '' },
   { home: 'Mexiko',                   away: 'England',              home_flag: '🇲🇽', away_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', kickoff: '2026-07-06 02:00', round: 'Runde der 16', group: '' },
-  { home: 'Portugal / Kroatien',      away: 'Spanien / Österreich', home_flag: '🇵🇹', away_flag: '🇪🇸', kickoff: '2026-07-06 21:00', round: 'Runde der 16', group: '' },
-  { home: 'USA',                      away: 'Belgien',              home_flag: '🇺🇸', away_flag: '🇧🇪', kickoff: '2026-07-07 02:00', round: 'Runde der 16', group: '' },
-  { home: 'Argentinien / Kap Verde',  away: 'Australien / Ägypten', home_flag: '🇦🇷', away_flag: '🇦🇺', kickoff: '2026-07-07 18:00', round: 'Runde der 16', group: '' },
-  { home: 'Schweiz / Algerien',       away: 'Kolumbien / Ghana',    home_flag: '🇨🇭', away_flag: '🇨🇴', kickoff: '2026-07-07 22:00', round: 'Runde der 16', group: '' },
+  { home: 'Portugal',                  away: 'Spanien',              home_flag: '🇵🇹', away_flag: '🇪🇸', kickoff: '2026-07-06 21:00', round: 'Runde der 16', group: '' },
+  { home: 'USA',                       away: 'Belgien',              home_flag: '🇺🇸', away_flag: '🇧🇪', kickoff: '2026-07-07 02:00', round: 'Runde der 16', group: '' },
+  { home: 'Argentinien',               away: 'Ägypten',              home_flag: '🇦🇷', away_flag: '🇪🇬', kickoff: '2026-07-07 18:00', round: 'Runde der 16', group: '' },
+  { home: 'Schweiz',                   away: 'Kolumbien',            home_flag: '🇨🇭', away_flag: '🇨🇴', kickoff: '2026-07-07 22:00', round: 'Runde der 16', group: '' },
 
 ];
 
