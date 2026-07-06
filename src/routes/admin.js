@@ -47,20 +47,39 @@ async function propagateBracketResult(gameId) {
   if (!game || !game.finished || game.home_score == null || game.away_score == null) return;
   if (game.home_score === game.away_score) return; // Unentschieden: kein eindeutiger Sieger
 
-  const NEXT_ROUND = { 'Viertelfinale': 'Halbfinale', 'Halbfinale': 'Finale' };
-  const nextRoundName = NEXT_ROUND[game.round];
-  if (!nextRoundName) return;
-
   const winner = game.home_score > game.away_score
     ? { team: game.home_team, flag: game.home_flag }
     : { team: game.away_team, flag: game.away_flag };
 
-  // Index dieses Spiels innerhalb der Runde (nach Anstoßzeit sortiert)
+  // Runde der 16 → Viertelfinale: per Namensabgleich (Bracket-Reihenfolge weicht vom Spielplan ab)
+  if (game.round === 'Runde der 16') {
+    const vfGames = await all('SELECT * FROM games WHERE round = ? ORDER BY kickoff ASC', ['Viertelfinale']);
+    for (const vf of vfGames) {
+      const homeSlots = vf.home_team.split(' / ').map(t => t.trim());
+      const awaySlots = vf.away_team.split(' / ').map(t => t.trim());
+      if (homeSlots.includes(game.home_team) || homeSlots.includes(game.away_team)) {
+        await run('UPDATE games SET home_team=?, home_flag=? WHERE id=?', [winner.team, winner.flag, vf.id]);
+        console.log(`Bracket: ${winner.team} → Viertelfinale (home)`);
+        return;
+      }
+      if (awaySlots.includes(game.home_team) || awaySlots.includes(game.away_team)) {
+        await run('UPDATE games SET away_team=?, away_flag=? WHERE id=?', [winner.team, winner.flag, vf.id]);
+        console.log(`Bracket: ${winner.team} → Viertelfinale (away)`);
+        return;
+      }
+    }
+    return;
+  }
+
+  // VF → HF und HF → Finale: Index-basiert (Paare: 0+1→0, 2+3→1)
+  const NEXT_ROUND = { 'Viertelfinale': 'Halbfinale', 'Halbfinale': 'Finale' };
+  const nextRoundName = NEXT_ROUND[game.round];
+  if (!nextRoundName) return;
+
   const roundGames = await all('SELECT id FROM games WHERE round = ? ORDER BY kickoff ASC', [game.round]);
   const gameIndex = roundGames.findIndex(g => g.id === game.id);
   if (gameIndex < 0) return;
 
-  // Paare: Spiel 0+1 → nächstes Spiel 0, Spiel 2+3 → nächstes Spiel 1, usw.
   const nextGames = await all('SELECT * FROM games WHERE round = ? ORDER BY kickoff ASC', [nextRoundName]);
   const nextGameIndex = Math.floor(gameIndex / 2);
   const side = gameIndex % 2 === 0 ? 'home' : 'away';
