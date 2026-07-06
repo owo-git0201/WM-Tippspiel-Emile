@@ -170,36 +170,44 @@
   <!-- K.O.-PHASE NACH TAG -->
   <div class="view-panel active" id="view-day">
     <%
-      const now = new Date();
-      const r16DayMap = {};
-      const r32DayMap = {};
-      Object.keys(byDay).forEach(function(dayKey) {
-        const r16 = byDay[dayKey].filter(function(g) { return g.round !== 'Gruppenphase' && g.round !== 'Runde der 32'; });
-        const r32 = byDay[dayKey].filter(function(g) { return g.round === 'Runde der 32'; });
-        if (r16.length > 0) r16DayMap[dayKey] = r16;
-        if (r32.length > 0) r32DayMap[dayKey] = r32;
+      const koRounds = ['Runde der 32', 'Runde der 16', 'Viertelfinale', 'Halbfinale', 'Finale'];
+      const koDayMaps = {};
+      const koHasFuture = {};
+      koRounds.forEach(function(round) {
+        var dayMap = {};
+        Object.keys(byDay).forEach(function(dayKey) {
+          var rg = byDay[dayKey].filter(function(g) { return g.round === round; });
+          if (rg.length > 0) dayMap[dayKey] = rg;
+        });
+        koDayMaps[round] = dayMap;
+        koHasFuture[round] = Object.values(dayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return !g.finished; });
       });
-      const hasR16 = Object.keys(r16DayMap).length > 0;
-      const hasR32 = Object.keys(r32DayMap).length > 0;
-      const r32HasFuture = Object.values(r32DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return !g.finished; });
-      const r16HasFuture = Object.values(r16DayMap).reduce(function(a,b){return a.concat(b);}, []).some(function(g){ return !g.finished; });
+      const hasAnyKO = koRounds.some(function(r){ return Object.keys(koDayMaps[r]).length > 0; });
     %>
-    <% if (!hasR16 && !hasR32) { %>
+    <% if (!hasAnyKO) { %>
     <div class="empty-hint">K.O.-Spiele erscheinen hier sobald sie beginnen.</div>
     <% } %>
 
-    <!-- Runde der 32 — einklappbar, offen wenn noch Spiele offen -->
-    <% if (hasR32) { %>
-    <div class="ko-collapse <%= r32HasFuture ? 'open' : '' %>" id="r32-section">
-      <button class="ko-collapse-btn" data-section="r32-section" data-open="▲ Runde der 32 verbergen" data-closed="▼ Runde der 32 anzeigen" onclick="toggleKO(this)">
-        <%= r32HasFuture ? '▲ Runde der 32 verbergen' : '▼ Runde der 32 anzeigen' %>
+    <% koRounds.forEach(function(round) { %>
+    <% if (Object.keys(koDayMaps[round]).length > 0) { %>
+    <%
+      var sectionId = 'ko-' + round.replace(/ /g, '-');
+      var isOpen = koHasFuture[round];
+    %>
+    <div class="ko-collapse <%= isOpen ? 'open' : '' %>" id="<%= sectionId %>">
+      <button class="ko-collapse-btn"
+        data-section="<%= sectionId %>"
+        data-open="&#9650; <%= round %> verbergen"
+        data-closed="&#9660; <%= round %> anzeigen"
+        onclick="toggleKO(this)">
+        <%= isOpen ? '▲' : '▼' %> <%= round %> <%= isOpen ? 'verbergen' : 'anzeigen' %>
       </button>
       <div class="ko-collapse-body">
-        <% Object.keys(r32DayMap).forEach(function(dayKey) { %>
+        <% Object.keys(koDayMaps[round]).forEach(function(dayKey) { %>
         <div class="game-group">
           <h2 class="group-title"><%= dayKey %></h2>
           <div class="games-grid">
-            <% r32DayMap[dayKey].forEach(function(game) { %>
+            <% koDayMaps[round][dayKey].forEach(function(game) { %>
             <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
             <% }) %>
           </div>
@@ -208,27 +216,7 @@
       </div>
     </div>
     <% } %>
-
-    <!-- Achtelfinale (Runde der 16) — einklappbar, offen wenn noch Spiele offen -->
-    <% if (hasR16) { %>
-    <div class="ko-collapse <%= r16HasFuture ? 'open' : '' %>" id="r16-section">
-      <button class="ko-collapse-btn" data-section="r16-section" data-open="▲ Runde der 16 verbergen" data-closed="▼ Runde der 16 anzeigen" onclick="toggleKO(this)">
-        <%= r16HasFuture ? '▲ Runde der 16 verbergen' : '▼ Runde der 16 anzeigen' %>
-      </button>
-      <div class="ko-collapse-body">
-        <% Object.keys(r16DayMap).forEach(function(dayKey) { %>
-        <div class="game-group">
-          <h2 class="group-title"><%= dayKey %></h2>
-          <div class="games-grid">
-            <% r16DayMap[dayKey].forEach(function(game) { %>
-            <%- include('partials/game-card', { game, powerplaysByMatchday }) %>
-            <% }) %>
-          </div>
-        </div>
-        <% }) %>
-      </div>
-    </div>
-    <% } %>
+    <% }) %>
 
     <script>
       function toggleKO(btn) {

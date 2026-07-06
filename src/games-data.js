@@ -127,6 +127,12 @@ const GAMES = [
   { home: 'Argentinien',               away: 'Ägypten',              home_flag: '🇦🇷', away_flag: '🇪🇬', kickoff: '2026-07-07 18:00', round: 'Runde der 16', group: '' },
   { home: 'Schweiz',                   away: 'Kolumbien',            home_flag: '🇨🇭', away_flag: '🇨🇴', kickoff: '2026-07-07 22:00', round: 'Runde der 16', group: '' },
 
+  // === VIERTELFINALE ===
+  { home: 'Frankreich',               away: 'Marokko',              home_flag: '🇫🇷', away_flag: '🇲🇦', kickoff: '2026-07-09 22:00', round: 'Viertelfinale', group: '' },
+  { home: 'Portugal / Spanien',       away: 'USA / Belgien',        home_flag: '🇵🇹', away_flag: '🇺🇸', kickoff: '2026-07-10 02:00', round: 'Viertelfinale', group: '' },
+  { home: 'Norwegen',                 away: 'England',              home_flag: '🇳🇴', away_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', kickoff: '2026-07-10 22:00', round: 'Viertelfinale', group: '' },
+  { home: 'Argentinien / Ägypten',    away: 'Schweiz / Kolumbien',  home_flag: '🇦🇷', away_flag: '🇨🇭', kickoff: '2026-07-11 02:00', round: 'Viertelfinale', group: '' },
+
 ];
 
 module.exports = GAMES;
