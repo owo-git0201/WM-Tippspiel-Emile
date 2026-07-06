@@ -8,7 +8,7 @@
   const isMyPowerplay = ppForMatchday && ppForMatchday == game.id;
   const mdPowerplayTaken = ppForMatchday && !isMyPowerplay;
   const isAutoTip = hasTip && game.is_auto;
-  const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Finale'].includes(game.round);
+  const isKOGame = ['Runde der 32','Runde der 16','Viertelfinale','Halbfinale','Spiel um Platz 3','Finale'].includes(game.round);
 %>
 <div class="game-card <%= isFinished ? 'game-finished' : (isPast ? 'game-live' : '') %> <%= isMyPowerplay ? 'game-powerplay' : '' %> <%= hasTip ? 'game-tipped' : '' %>">
 
@@ -95,7 +95,7 @@
     </div>
     <div class="tip-actions">
       <%
-        const koMinus = {'Runde der 32': 8, 'Runde der 16': 8, 'Viertelfinale': 12, 'Halbfinale': 12, 'Finale': 16};
+        const koMinus = {'Runde der 32': 8, 'Runde der 16': 8, 'Viertelfinale': 12, 'Halbfinale': 12, 'Spiel um Platz 3': 8, 'Finale': 16};
         const minusPts = koMinus[game.round];
       %>
       <div class="powerplay-wrap">

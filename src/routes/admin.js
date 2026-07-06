@@ -73,6 +73,22 @@ async function propagateBracketResult(gameId) {
     await run('UPDATE games SET away_team=?, away_flag=? WHERE id=?', [winner.team, winner.flag, nextGame.id]);
   }
   console.log(`Bracket: ${winner.team} → ${nextRoundName} (${side})`);
+
+  // Halbfinale-Verlierer → Spiel um Platz 3
+  if (game.round === 'Halbfinale') {
+    const loser = game.home_score > game.away_score
+      ? { team: game.away_team, flag: game.away_flag }
+      : { team: game.home_team, flag: game.home_flag };
+    const platz3 = await get('SELECT * FROM games WHERE round = ? ORDER BY kickoff ASC LIMIT 1', ['Spiel um Platz 3']);
+    if (platz3) {
+      if (side === 'home') {
+        await run('UPDATE games SET home_team=?, home_flag=? WHERE id=?', [loser.team, loser.flag, platz3.id]);
+      } else {
+        await run('UPDATE games SET away_team=?, away_flag=? WHERE id=?', [loser.team, loser.flag, platz3.id]);
+      }
+      console.log(`Bracket: ${loser.team} → Spiel um Platz 3 (${side})`);
+    }
+  }
 }
 
 // Ergebnis eintragen

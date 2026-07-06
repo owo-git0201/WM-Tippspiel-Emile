@@ -9,7 +9,7 @@ const ROUND_MULTIPLIERS = {
 };
 
 // K.O.-Runden: Powerspiel ist zweischneidig (Minus bei Fehltipp)
-const KO_ROUNDS = new Set(['Runde der 32', 'Runde der 16', 'Viertelfinale', 'Halbfinale', 'Finale']);
+const KO_ROUNDS = new Set(['Runde der 32', 'Runde der 16', 'Viertelfinale', 'Halbfinale', 'Spiel um Platz 3', 'Finale']);
 
 const POINTS_TENDENCY = 2;
 const POINTS_EXACT = 4;

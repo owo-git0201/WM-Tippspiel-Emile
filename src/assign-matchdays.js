@@ -8,11 +8,12 @@ const { all, run } = require('./db');
 // Idempotent: kann bei jedem Start laufen.
 
 const KO_SLOT_MAP = {
-  'Runde der 32':  4,
-  'Runde der 16':  5,
-  'Viertelfinale': 6,
-  'Halbfinale':    6,
-  'Finale':        6,
+  'Runde der 32':      4,
+  'Runde der 16':      5,
+  'Viertelfinale':     6,
+  'Halbfinale':        6,
+  'Spiel um Platz 3':  6,
+  'Finale':            6,
 };
 
 async function assignMatchdays() {
