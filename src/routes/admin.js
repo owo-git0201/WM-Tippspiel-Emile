@@ -41,6 +41,40 @@ router.get('/', requireAdmin, async (req, res) => {
   res.render('admin', { games, users, championTips, flash: flashMsg });
 });
 
+// Bracket-Weiterschaltung: Gewinner in nächste KO-Runde übertragen
+async function propagateBracketResult(gameId) {
+  const game = await get('SELECT * FROM games WHERE id = ?', [gameId]);
+  if (!game || !game.finished || game.home_score == null || game.away_score == null) return;
+  if (game.home_score === game.away_score) return; // Unentschieden: kein eindeutiger Sieger
+
+  const NEXT_ROUND = { 'Viertelfinale': 'Halbfinale', 'Halbfinale': 'Finale' };
+  const nextRoundName = NEXT_ROUND[game.round];
+  if (!nextRoundName) return;
+
+  const winner = game.home_score > game.away_score
+    ? { team: game.home_team, flag: game.home_flag }
+    : { team: game.away_team, flag: game.away_flag };
+
+  // Index dieses Spiels innerhalb der Runde (nach Anstoßzeit sortiert)
+  const roundGames = await all('SELECT id FROM games WHERE round = ? ORDER BY kickoff ASC', [game.round]);
+  const gameIndex = roundGames.findIndex(g => g.id === game.id);
+  if (gameIndex < 0) return;
+
+  // Paare: Spiel 0+1 → nächstes Spiel 0, Spiel 2+3 → nächstes Spiel 1, usw.
+  const nextGames = await all('SELECT * FROM games WHERE round = ? ORDER BY kickoff ASC', [nextRoundName]);
+  const nextGameIndex = Math.floor(gameIndex / 2);
+  const side = gameIndex % 2 === 0 ? 'home' : 'away';
+  const nextGame = nextGames[nextGameIndex];
+  if (!nextGame) return;
+
+  if (side === 'home') {
+    await run('UPDATE games SET home_team=?, home_flag=? WHERE id=?', [winner.team, winner.flag, nextGame.id]);
+  } else {
+    await run('UPDATE games SET away_team=?, away_flag=? WHERE id=?', [winner.team, winner.flag, nextGame.id]);
+  }
+  console.log(`Bracket: ${winner.team} → ${nextRoundName} (${side})`);
+}
+
 // Ergebnis eintragen
 router.post('/result/:id', requireAdmin, async (req, res) => {
   const { home_score, away_score } = req.body;
@@ -60,6 +94,7 @@ router.post('/result/:id', requireAdmin, async (req, res) => {
       updated++;
     }
   }
+  await propagateBracketResult(parseInt(gameId));
   flash(req, `✓ ${game.home_team} ${hs}:${as_} ${game.away_team} gespeichert — ${updated} Tipps bewertet.`);
   res.redirect('/admin');
 });
@@ -83,6 +118,7 @@ router.post('/result/:id/correct', requireAdmin, async (req, res) => {
         [breakdown.total, breakdown.powerBonus, tip.id]);
     }
   }
+  await propagateBracketResult(parseInt(gameId));
   flash(req, `✓ Ergebnis korrigiert: ${game.home_team} ${hs}:${as_} ${game.away_team}`);
   res.redirect('/admin');
 });

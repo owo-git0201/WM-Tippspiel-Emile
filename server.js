@@ -45,10 +45,11 @@ app.use(session({
 async function seedGames() {
   let added = 0;
   for (const g of GAMES) {
-    const existing = await get(
-      'SELECT id FROM games WHERE home_team = ? AND away_team = ? AND kickoff = ?',
-      [g.home, g.away, g.kickoff]
-    );
+    // Gruppenphase: eindeutig per Teams + Anstoßzeit (gleiche Teams in verschiedenen Gruppen)
+    // KO-Runden: eindeutig per Runde + Anstoßzeit (Teamname ändert sich nach Bracket-Fill)
+    const existing = g.round === 'Gruppenphase'
+      ? await get('SELECT id FROM games WHERE home_team=? AND away_team=? AND kickoff=?', [g.home, g.away, g.kickoff])
+      : await get('SELECT id FROM games WHERE round=? AND kickoff=?', [g.round, g.kickoff]);
     if (!existing) {
       await run(
         'INSERT INTO games (home_team, away_team, home_flag, away_flag, kickoff, round, group_name) VALUES (?,?,?,?,?,?,?)',
@@ -98,13 +99,15 @@ app.get('/', async (req, res) => {
     ORDER BY g.kickoff ASC
   `, [userId]);
 
-  // Nur Spiele mit mind. einem Patenland anzeigen (auch TBD-Namen wie "Portugal / Kroatien")
+  // Gruppenphase: nur Patenland-Spiele. KO-Runden: immer anzeigen (Bracket läuft durch)
   function isPatenland(name) {
     if (PATENLAENDER.has(name)) return true;
     if (name.includes(' / ')) return name.split(' / ').some(t => PATENLAENDER.has(t.trim()));
     return false;
   }
-  const games = allGames.filter(g => isPatenland(g.home_team) || isPatenland(g.away_team));
+  const games = allGames.filter(g =>
+    g.round !== 'Gruppenphase' || isPatenland(g.home_team) || isPatenland(g.away_team)
+  );
 
   // Pro echtem Spieltag (1/2/3) max. 1 Powerspiel. Map: Spieltag-Nr → game_id
   // des bereits gesetzten Powerspiels. Damit deaktiviert die UI gezielt die
