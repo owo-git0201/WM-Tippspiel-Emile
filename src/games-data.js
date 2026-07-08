@@ -131,7 +131,7 @@ const GAMES = [
   { home: 'Frankreich',               away: 'Marokko',              home_flag: '🇫🇷', away_flag: '🇲🇦', kickoff: '2026-07-09 22:00', round: 'Viertelfinale', group: '' },
   { home: 'Portugal / Spanien',       away: 'USA / Belgien',        home_flag: '🇵🇹', away_flag: '🇺🇸', kickoff: '2026-07-10 21:00', round: 'Viertelfinale', group: '' },
   { home: 'Norwegen',                 away: 'England',              home_flag: '🇳🇴', away_flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', kickoff: '2026-07-11 23:00', round: 'Viertelfinale', group: '' },
-  { home: 'Argentinien / Ägypten',    away: 'Schweiz / Kolumbien',  home_flag: '🇦🇷', away_flag: '🇨🇭', kickoff: '2026-07-12 03:00', round: 'Viertelfinale', group: '' },
+  { home: 'Argentinien / Ägypten',    away: 'Schweiz',              home_flag: '🇦🇷', away_flag: '🇨🇭', kickoff: '2026-07-12 03:00', round: 'Viertelfinale', group: '' },
 
   // === HALBFINALE ===
   { home: 'noch offen', away: 'noch offen', home_flag: '🏳', away_flag: '🏳', kickoff: '2026-07-14 21:00', round: 'Halbfinale', group: '' },
