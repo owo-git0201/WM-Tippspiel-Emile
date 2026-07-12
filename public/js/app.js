@@ -1,6 +1,26 @@
 // Tipp-Formulare: Auto-Save
+function setMatchdayPowerplayState(matchday, activeGameId) {
+  if (!matchday) return;
+  document.querySelectorAll(`.tip-form[data-matchday="${matchday}"]`).forEach(otherForm => {
+    const otherId = otherForm.dataset.gameId;
+    if (String(otherId) === String(activeGameId)) return;
+    const otherPP = otherForm.querySelector(`[name="powerplay_${otherId}"]`);
+    const otherLabel = otherPP?.closest('.powerplay-toggle');
+    if (!otherPP) return;
+    if (activeGameId) {
+      otherPP.checked = false;
+      otherPP.disabled = true;
+      otherLabel?.classList.add('disabled');
+    } else {
+      otherPP.disabled = false;
+      otherLabel?.classList.remove('disabled');
+    }
+  });
+}
+
 document.querySelectorAll('.tip-form[data-autosave]').forEach(form => {
   const gameId = form.dataset.gameId;
+  const matchday = form.dataset.matchday;
   const homeInput = form.querySelector(`[name="score_home_${gameId}"]`);
   const awayInput = form.querySelector(`[name="score_away_${gameId}"]`);
   const tendencyBtns = form.querySelectorAll('.tendency-btn');
@@ -23,7 +43,8 @@ document.querySelectorAll('.tip-form[data-autosave]').forEach(form => {
     if (!tendency) return;
     const scoreHome = homeInput?.value;
     const scoreAway = awayInput?.value;
-    const powerplay = form.querySelector(`[name="powerplay_${gameId}"]`)?.checked ? '1' : '0';
+    const ppBox = form.querySelector(`[name="powerplay_${gameId}"]`);
+    const powerplay = ppBox?.checked ? '1' : '0';
 
     status.textContent = '…';
     status.className = 'tip-status';
@@ -45,13 +66,22 @@ document.querySelectorAll('.tip-form[data-autosave]').forEach(form => {
         status.textContent = '✓';
         status.className = 'tip-status ok';
         setTimeout(() => { status.textContent = ''; }, 2000);
+        if (powerplay === '1') {
+          setMatchdayPowerplayState(matchday, gameId);
+        } else {
+          setMatchdayPowerplayState(matchday, null);
+        }
       } else {
         status.textContent = data.error || 'Fehler';
         status.className = 'tip-status err';
+        if (powerplay === '1' && ppBox) {
+          ppBox.checked = false;
+        }
       }
     } catch {
       status.textContent = 'Verbindungsfehler';
       status.className = 'tip-status err';
+      if (powerplay === '1' && ppBox) ppBox.checked = false;
     }
   }
 

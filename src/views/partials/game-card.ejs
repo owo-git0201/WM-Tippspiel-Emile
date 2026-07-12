@@ -63,7 +63,7 @@
   <% } %>
 
   <% if (canTip) { %>
-  <form class="tip-form" data-game-id="<%= game.id %>" data-autosave="true">
+  <form class="tip-form" data-game-id="<%= game.id %>" data-matchday="<%= game.matchday || '' %>" data-autosave="true">
     <% if (isKOGame) { %>
     <div class="ko-90min-note">⏱ Tipp gilt f&uuml;r <strong>90 Minuten</strong> &mdash; Unentschieden ist m&ouml;glich</div>
     <% } %>
