@@ -120,7 +120,7 @@
             <tr class="<%= u.id === user.id ? 'row-me' : '' %>">
               <td><% if (i===0){%>🥇<%}else if(i===1){%>🥈<%}else if(i===2){%>🥉<%}else{%><%= i+1 %><%}%></td>
               <td><%= u.display_name %><% if (u.id === user.id) { %> <span class="you-tag">Du</span><% } %></td>
-              <td><strong><%= u.total_points %></strong></td>
+              <td><strong><%= u.total_points + (u.champion_points || 0) %></strong></td>
             </tr>
             <% }) %>
           </tbody>

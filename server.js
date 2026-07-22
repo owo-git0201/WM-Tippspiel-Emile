@@ -281,12 +281,16 @@ app.get('/ranking', async (req, res) => {
     classRankings[cls.name] = await all(`
       SELECT u.id, u.display_name, u.role, u.disqualified,
         COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) as total_points,
-        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0) as power_points
+        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0) as power_points,
+        COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id), 0) as champion_points
       FROM users u
       LEFT JOIN tips t ON t.user_id = u.id
       WHERE (u.class1_id = ? OR u.class2_id = ?) AND u.role != 'admin'
       GROUP BY u.id
-      ORDER BY total_points DESC,
+      ORDER BY (
+        COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) +
+        COALESCE((SELECT ct.points FROM champion_tips ct WHERE ct.user_id=u.id), 0)
+      ) DESC,
         (COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.points ELSE 0 END), 0) -
          COALESCE(SUM(CASE WHEN u.disqualified=0 THEN t.power_bonus ELSE 0 END), 0)) DESC
       LIMIT 10
